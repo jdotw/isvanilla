@@ -1,0 +1,81 @@
+package main
+
+import (
+	"context"
+	_ "embed"
+	"net/http"
+	"os"
+
+	"github.com/gorilla/mux"
+	"github.com/jdotw/go-utils/log"
+	"github.com/jdotw/go-utils/tracing"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
+)
+
+func main() {
+	serviceName := "openapi"
+
+	// Logging and Tracing
+	logger, metricsFactory := log.Init(serviceName)
+	tracer := tracing.Init(serviceName, metricsFactory, logger)
+
+	// HTTP Router
+	r := mux.NewRouter()
+
+	// Inventory Service
+	{
+		repo, err := inventory.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		if err != nil {
+			logger.Bg().Fatal("Failed to create inventory repository", zap.Error(err))
+		}
+		service := inventory.NewService(repo, logger, tracer)
+		endPoints := inventory.NewEndpointSet(service, logger, tracer)
+		inventory.AddHTTPRoutes(r, endPoints, logger, tracer)
+	}
+
+	// Product Service
+	{
+		repo, err := product.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		if err != nil {
+			logger.Bg().Fatal("Failed to create product repository", zap.Error(err))
+		}
+		service := product.NewService(repo, logger, tracer)
+		endPoints := product.NewEndpointSet(service, logger, tracer)
+		product.AddHTTPRoutes(r, endPoints, logger, tracer)
+	}
+
+	// Vendor Service
+	{
+		repo, err := vendor.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		if err != nil {
+			logger.Bg().Fatal("Failed to create vendor repository", zap.Error(err))
+		}
+		service := vendor.NewService(repo, logger, tracer)
+		endPoints := vendor.NewEndpointSet(service, logger, tracer)
+		vendor.AddHTTPRoutes(r, endPoints, logger, tracer)
+	}
+
+	// HTTP Mux
+	m := tracing.NewServeMux(tracer)
+	m.Handle("/metrics", promhttp.Handler()) // Prometheus
+	m.Handle("/", r)
+
+	// Start Transports
+	go func() error {
+		// HTTP
+		httpHost := os.Getenv("HTTP_LISTEN_HOST")
+		httpPort := os.Getenv("HTTP_LISTEN_PORT")
+		if len(httpPort) == 0 {
+			httpPort = "8080"
+		}
+		httpAddr := httpHost + ":" + httpPort
+		logger.Bg().Info("Listening", zap.String("transport", "http"), zap.String("host", httpHost), zap.String("port", httpPort), zap.String("addr", httpAddr))
+		err := http.ListenAndServe(httpAddr, m)
+		logger.Bg().Fatal("Exit", zap.Error(err))
+		return err
+	}()
+
+	// Select Loop
+	select {}
+}

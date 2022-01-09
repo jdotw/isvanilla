@@ -2,15 +2,16 @@ package inventory
 
 import (
 	"context"
+	_ "embed"
 
 	"github.com/jdotw/go-utils/log"
 	"github.com/opentracing/opentracing-go"
 )
 
 type Service interface {
-	GetProduct(ctx context.Context, productID string) (*Product, error)
-	UpdateProduct(ctx context.Context, productID string, product *Product) (*Product, error)
-	CreateProduct(ctx context.Context, productID string, product *Product) (*Product, error)
+	GetInventorySnapshots(ctx context.Context, vendorID string, productID string) (*[]InventorySnapshot, error)
+
+	CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot *InventorySnapshot) (*InventorySnapshot, error)
 }
 
 type service struct {
@@ -27,17 +28,12 @@ func NewService(repository Repository, logger log.Factory, tracer opentracing.Tr
 	return svc
 }
 
-func (f *service) GetProduct(ctx context.Context, productID string) (*Product, error) {
-	v, err := f.repository.GetProduct(ctx, productID)
+func (f *service) GetInventorySnapshots(ctx context.Context, vendorID string, productID string) (*[]InventorySnapshot, error) {
+	v, err := f.repository.GetInventorySnapshots(ctx, vendorID, productID)
 	return v, err
 }
 
-func (f *service) UpdateProduct(ctx context.Context, productID string, product *Product) (*Product, error) {
-	v, err := f.repository.UpdateProduct(ctx, productID, product)
-	return v, err
-}
-
-func (f *service) CreateProduct(ctx context.Context, productID string, product *Product) (*Product, error) {
-	v, err := f.repository.CreateProduct(ctx, productID, product)
+func (f *service) CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot *InventorySnapshot) (*InventorySnapshot, error) {
+	v, err := f.repository.CreateInventorySnapshot(ctx, vendorID, productID, inventorySnapshot)
 	return v, err
 }

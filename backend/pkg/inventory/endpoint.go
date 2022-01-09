@@ -2,67 +2,60 @@ package inventory
 
 import (
 	"context"
+	_ "embed"
 
+	"github.com/12kmps/baas/authz/opa"
 	"github.com/go-kit/kit/endpoint"
 	kittracing "github.com/go-kit/kit/tracing/opentracing"
-	"github.com/opentracing/opentracing-go"
-	// _ "embed"
-
+	"github.com/jdotw/go-utils/authn/jwt"
 	"github.com/jdotw/go-utils/log"
+	"github.com/opentracing/opentracing-go"
 )
 
 type EndpointSet struct {
-	GetProductEndpoint    endpoint.Endpoint
-	UpdateProductEndpoint endpoint.Endpoint
-	CreateProductEndpoint endpoint.Endpoint
+	GetInventorySnapshotsEndpoint   endpoint.Endpoint
+	CreateInventorySnapshotEndpoint endpoint.Endpoint
 }
 
-// //go:embed policies/endpoint.rego
-// var endpointPolicy string
+//go:embed policies/endpoint.rego
+var endpointPolicy string
 
 func NewEndpointSet(s Service, logger log.Factory, tracer opentracing.Tracer) EndpointSet {
-	// authn := jwt.NewAuthenticator(logger, tracer)
-	// authz := opa.NewAuthorizor(logger, tracer)
+	authn := jwt.NewAuthenticator(logger, tracer)
+	authz := opa.NewAuthorizor(logger, tracer)
 
-	var getProductEndpoint endpoint.Endpoint
+	var getInventorySnapshotsEndpoint endpoint.Endpoint
 	{
-		getProductEndpoint = makeGetProductEndpoint(s, logger, tracer)
-		// getProductEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.product.endpoint.authz.get_product")(getProductEndpoint)
-		// getProductEndpoint = authn.NewMiddleware()(getProductEndpoint)
-		getProductEndpoint = kittracing.TraceServer(tracer, "GetProductEndpoint")(getProductEndpoint)
+		getInventorySnapshotsEndpoint = makeGetInventorySnapshotsEndpoint(s, logger, tracer)
+		getInventorySnapshotsEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.inventory.endpoint.authz.get_inventory_snapshots")(getInventorySnapshotsEndpoint)
+		getInventorySnapshotsEndpoint = authn.NewMiddleware()(getInventorySnapshotsEndpoint)
+		getInventorySnapshotsEndpoint = kittracing.TraceServer(tracer, "GetInventorySnapshotsEndpoint")(getInventorySnapshotsEndpoint)
 	}
-	var updateProductEndpoint endpoint.Endpoint
+	var createInventorySnapshotEndpoint endpoint.Endpoint
 	{
-		updateProductEndpoint = makeUpdateProductEndpoint(s, logger, tracer)
-		// updateProductEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.product.endpoint.authz.update_product")(updateProductEndpoint)
-		// updateProductEndpoint = authn.NewMiddleware()(updateProductEndpoint)
-		updateProductEndpoint = kittracing.TraceServer(tracer, "UpdateProductEndpoint")(updateProductEndpoint)
-	}
-	var createProductEndpoint endpoint.Endpoint
-	{
-		createProductEndpoint = makeCreateProductEndpoint(s, logger, tracer)
-		// createProductEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.product.endpoint.authz.create_product")(createProductEndpoint)
-		// createProductEndpoint = authn.NewMiddleware()(createProductEndpoint)
-		createProductEndpoint = kittracing.TraceServer(tracer, "CreateProductEndpoint")(createProductEndpoint)
+		createInventorySnapshotEndpoint = makeCreateInventorySnapshotEndpoint(s, logger, tracer)
+		createInventorySnapshotEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.inventory.endpoint.authz.create_inventory_snapshot")(createInventorySnapshotEndpoint)
+		createInventorySnapshotEndpoint = authn.NewMiddleware()(createInventorySnapshotEndpoint)
+		createInventorySnapshotEndpoint = kittracing.TraceServer(tracer, "CreateInventorySnapshotEndpoint")(createInventorySnapshotEndpoint)
 	}
 	return EndpointSet{
-		GetProductEndpoint:    getProductEndpoint,
-		UpdateProductEndpoint: updateProductEndpoint,
-		CreateProductEndpoint: createProductEndpoint,
+		GetInventorySnapshotsEndpoint:   getInventorySnapshotsEndpoint,
+		CreateInventorySnapshotEndpoint: createInventorySnapshotEndpoint,
 	}
 }
 
-// GetProduct
+// GetInventorySnapshots
 
-type GetProductEndpointRequest struct {
+type GetInventorySnapshotsEndpointRequest struct {
+	VendorID  string
 	ProductID string
 }
 
-func makeGetProductEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
+func makeGetInventorySnapshotsEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		logger.For(ctx).Info("Product.GetProductEndpoint received request")
-		req := request.(GetProductEndpointRequest)
-		v, err := s.GetProduct(ctx, req.ProductID)
+		logger.For(ctx).Info("Inventory.GetInventorySnapshotsEndpoint received request")
+		req := request.(GetInventorySnapshotsEndpointRequest)
+		v, err := s.GetInventorySnapshots(ctx, req.VendorID, req.ProductID)
 		if err != nil {
 			return &v, err
 		}
@@ -70,39 +63,20 @@ func makeGetProductEndpoint(s Service, logger log.Factory, tracer opentracing.Tr
 	}
 }
 
-// UpdateProduct
+// CreateInventorySnapshot
 
-type UpdateProductEndpointRequest struct {
+type CreateInventorySnapshotEndpointRequest struct {
+	VendorID  string
 	ProductID string
 
-	Product *Product
+	InventorySnapshot *InventorySnapshot
 }
 
-func makeUpdateProductEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
+func makeCreateInventorySnapshotEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		logger.For(ctx).Info("Product.UpdateProductEndpoint received request")
-		req := request.(UpdateProductEndpointRequest)
-		v, err := s.UpdateProduct(ctx, req.ProductID, req.Product)
-		if err != nil {
-			return &v, err
-		}
-		return &v, nil
-	}
-}
-
-// CreateProduct
-
-type CreateProductEndpointRequest struct {
-	ProductID string
-
-	Product *Product
-}
-
-func makeCreateProductEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		logger.For(ctx).Info("Product.CreateProductEndpoint received request")
-		req := request.(CreateProductEndpointRequest)
-		v, err := s.CreateProduct(ctx, req.ProductID, req.Product)
+		logger.For(ctx).Info("Inventory.CreateInventorySnapshotEndpoint received request")
+		req := request.(CreateInventorySnapshotEndpointRequest)
+		v, err := s.CreateInventorySnapshot(ctx, req.VendorID, req.ProductID, req.InventorySnapshot)
 		if err != nil {
 			return &v, err
 		}

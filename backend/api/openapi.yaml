@@ -31,6 +31,7 @@ paths:
         - Vendor
       summary: Create Vendor Record
       description: Create Vendor Record
+      operationId: CreateVendor
       requestBody:
         required: true
         content:
@@ -79,8 +80,15 @@ paths:
         - Vendor
       summary: Update Vendor Record
       description: Update Vendor Record
+      operationId: UpdateVendor
       parameters: 
         - $ref: "#/components/parameters/VendorID"
+      requestBody:
+        required: true
+        content:
+          application/json:            
+            schema:
+              $ref: "#/components/schemas/Vendor"
       responses:
         "200":
           description: OK
@@ -103,6 +111,7 @@ paths:
         - Vendor
       summary: Delete a Vendor Record
       description: Delete a Vendor Record
+      operationId: DeleteVendor
       parameters: 
         - $ref: "#/components/parameters/VendorID"
       responses:
@@ -116,6 +125,194 @@ paths:
           $ref: "#/components/responses/ForbiddenError"
         "404":
           $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  # 
+  # Product
+  #
+  /vendor/{vendor_id}/products:
+    get:
+      tags: 
+        - Product
+      summary: Get all Products for a Vendor
+      description: Get all Products for a Vendor
+      operationId: GetProducts
+      parameters: 
+        - $ref: "#/components/parameters/VendorID"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /vendor/{vendor_id}/product:
+    post:
+      tags:
+        - Product
+      summary: Create Product Record for Vendor
+      description: Create Product Record for Vendor
+      operationId: CreateProduct
+      parameters: 
+        - $ref: "#/components/parameters/VendorID"
+      requestBody:
+        required: true
+        content:
+          application/json:            
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /vendor/{vendor_id}/product/{product_id}:
+    get:
+      tags:
+        - Product
+      summary: Get Product Record for Vendor
+      description: Get Product Record for Vendor
+      operationId: GetProduct
+      parameters:
+        - $ref: "#/components/parameters/VendorID"
+        - $ref: "#/components/parameters/ProductID"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      tags:
+        - Product
+      summary: Update Product Record for Vendor
+      description: Update Product Record for Vendor
+      operationId: UpdateProduct
+      parameters: 
+        - $ref: "#/components/parameters/VendorID"
+        - $ref: "#/components/parameters/ProductID"
+      requestBody:
+        required: true
+        content:
+          application/json:            
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - Product
+      summary: Delete a Product Record for Vendor
+      description: Delete a Product Record for Vendor
+      operationId: DeleteProduct
+      parameters: 
+        - $ref: "#/components/parameters/VendorID"
+        - $ref: "#/components/parameters/ProductID"
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  ###
+  ### Inventory
+  ###
+  /vendor/{vendor_id}/product/{product_id}/inventory:
+    get:
+      tags: 
+        - Inventory
+      summary: Get Recent InventorySnapshots for Product
+      description: Get Recent InventorySnapshots for Product
+      operationId: GetInventorySnapshots
+      parameters: 
+        - $ref: "#/components/parameters/VendorID"
+        - $ref: "#/components/parameters/ProductID"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventorySnapshot"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - Inventory
+      summary: Create and InventorySnapshot Record for Product
+      description: Create and InventorySnapshot Record for Product
+      operationId: CreateInventorySnapshot
+      parameters: 
+        - $ref: "#/components/parameters/VendorID"
+        - $ref: "#/components/parameters/ProductID"
+      requestBody:
+        required: true
+        content:
+          application/json:            
+            schema:
+              $ref: "#/components/schemas/InventorySnapshot"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventorySnapshot"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
         "500":
           $ref: "#/components/responses/InternalServerError"
 components:

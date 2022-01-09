@@ -3,7 +3,7 @@
 // It is expected that this file will be re-generated and overwitten to
 // adapt to changes in the OpenAPI spec that was used to generate it
 
-package inventory
+package product
 
 import (
 	_ "embed"
@@ -51,6 +51,9 @@ type ForbiddenError HTTPError
 
 // InternalServerError defines model for InternalServerError.
 type InternalServerError HTTPError
+
+// NotFoundError defines model for NotFoundError.
+type NotFoundError HTTPError
 
 // UnauthorizedError defines model for UnauthorizedError.
 type UnauthorizedError HTTPError

@@ -2,15 +2,15 @@ package inventory
 
 import (
 	"context"
+	_ "embed"
 
+	"github.com/12kmps/baas/recorderrors"
+	"github.com/jdotw/go-utils/log"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormopentracing "gorm.io/plugin/opentracing"
-
-	"github.com/jdotw/go-utils/log"
-	"github.com/jdotw/go-utils/recorderrors"
 )
 
 type repository struct {
@@ -27,17 +27,19 @@ func NewGormRepository(ctx context.Context, connString string, logger log.Factor
 
 		db.Use(gormopentracing.New(gormopentracing.WithTracer(tracer)))
 
-		err = db.AutoMigrate(&Vendor{})
-		if err != nil {
-			logger.For(ctx).Fatal("Failed to migrate db for type Vendor", zap.Error(err))
-		}
-		err = db.AutoMigrate(&Product{})
-		if err != nil {
-			logger.For(ctx).Fatal("Failed to migrate db for type Product", zap.Error(err))
-		}
+		// TODO: Ensure these migrations are correct
+		// The OpenAPI Spec used to generate this code often uses
+		// results in AutoMigrate statements being generated for
+		// request/response body objects instead of actual data models
+
 		err = db.AutoMigrate(&InventorySnapshot{})
 		if err != nil {
 			logger.For(ctx).Fatal("Failed to migrate db for type InventorySnapshot", zap.Error(err))
+		}
+
+		err = db.AutoMigrate(&[]InventorySnapshot{})
+		if err != nil {
+			logger.For(ctx).Fatal("Failed to migrate db for type []InventorySnapshot", zap.Error(err))
 		}
 
 		r = &repository{db: db}
@@ -46,34 +48,29 @@ func NewGormRepository(ctx context.Context, connString string, logger log.Factor
 	return r, nil
 }
 
-func (p *repository) GetProduct(ctx context.Context, productID string) (*Product, error) {
-	var v Product
-	tx := p.db.WithContext(ctx).Model(&Product{}).First(&v, "id = ?", productID)
+func (p *repository) GetInventorySnapshots(ctx context.Context, vendorID string, productID string) (*[]InventorySnapshot, error) {
+
+	// TODO: Check the .First query as codegen is not able
+	// to elegantly deal with multiple request parameters
+	var v []InventorySnapshot
+	tx := p.db.WithContext(ctx).Model(&[]InventorySnapshot{}).First(&v, "vendorID = ? productID = ? ", vendorID, productID)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return nil, recorderrors.ErrNotFound
 	}
 	return &v, tx.Error
-}
-
-func (p *repository) UpdateProduct(ctx context.Context, productID string, product *Product) (*Product, error) {
-	var v Product
-
-	tx := p.db.WithContext(ctx).Model(&Product{}).Where("id = ?", productID).UpdateColumns(product)
-	if tx.RowsAffected == 0 {
-		return nil, recorderrors.ErrNotFound
-	}
-
-	return &v, tx.Error
 
 }
 
-func (p *repository) CreateProduct(ctx context.Context, profileID string, product *Product) (*Product, error) {
+func (p *repository) CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot *InventorySnapshot) (*InventorySnapshot, error) {
+
 	var tx *gorm.DB
+	var v InventorySnapshot
 
-	tx = p.db.WithContext(ctx).Create(&product)
+	tx = p.db.WithContext(ctx).Create(&inventorySnapshot)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
-	return product, nil
+	return &v, nil
+
 }

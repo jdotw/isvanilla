@@ -2,92 +2,70 @@ package inventory
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"net/http"
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
-	"github.com/opentracing/opentracing-go"
-
+	"github.com/jdotw/go-utils/authn/jwt"
 	"github.com/jdotw/go-utils/log"
 	"github.com/jdotw/go-utils/transport"
+	"github.com/opentracing/opentracing-go"
 )
 
 func AddHTTPRoutes(r *mux.Router, endpoints EndpointSet, logger log.Factory, tracer opentracing.Tracer) {
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorEncoder(transport.HTTPErrorEncoder),
-		// httptransport.ServerBefore(jwt.HTTPAuthorizationToContext()),
+		httptransport.ServerBefore(jwt.HTTPAuthorizationToContext()),
 	}
 
-	getProductHandler := httptransport.NewServer(
-		endpoints.GetProductEndpoint,
-		decodeGetProductEndpointRequest,
+	getInventorySnapshotsHandler := httptransport.NewServer(
+		endpoints.GetInventorySnapshotsEndpoint,
+		decodeGetInventorySnapshotsEndpointRequest,
 		transport.HTTPEncodeResponse,
 		options...,
 	)
-	r.Handle("/product/{product_id}", getProductHandler).Methods("GET")
+	r.Handle("/vendor/{vendor_id}/product/{product_id}/inventory", getInventorySnapshotsHandler).Methods("GET")
 
-	updateProductHandler := httptransport.NewServer(
-		endpoints.UpdateProductEndpoint,
-		decodeUpdateProductEndpointRequest,
+	createInventorySnapshotHandler := httptransport.NewServer(
+		endpoints.CreateInventorySnapshotEndpoint,
+		decodeCreateInventorySnapshotEndpointRequest,
 		transport.HTTPEncodeResponse,
 		options...,
 	)
-	r.Handle("/product/{product_id}", updateProductHandler).Methods("PATCH")
-
-	createProductHandler := httptransport.NewServer(
-		endpoints.CreateProductEndpoint,
-		decodeCreateProductEndpointRequest,
-		transport.HTTPEncodeResponse,
-		options...,
-	)
-	r.Handle("/profile/{profile_id}/product", createProductHandler).Methods("POST")
+	r.Handle("/vendor/{vendor_id}/product/{product_id}/inventory", createInventorySnapshotHandler).Methods("POST")
 
 }
 
-// GetProduct
+// GetInventorySnapshots
 
-func decodeGetProductEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
+func decodeGetInventorySnapshotsEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
+
 	vars := mux.Vars(r)
-	request := GetProductEndpointRequest{
+
+	request := GetInventorySnapshotsEndpointRequest{
+		VendorID:  vars["vendor_id"],
 		ProductID: vars["product_id"],
 	}
 	return request, nil
 }
 
-// UpdateProduct
+// CreateInventorySnapshot
 
-func decodeUpdateProductEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var product Product
+func decodeCreateInventorySnapshotEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	var inventorySnapshot InventorySnapshot
 
-	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&inventorySnapshot); err != nil {
 		return nil, err
 	}
 
 	vars := mux.Vars(r)
 
-	request := UpdateProductEndpointRequest{
-		ProductID: vars["product_id"],
-		Product:   &product,
-	}
-
-	return request, nil
-}
-
-// CreateProduct
-
-func decodeCreateProductEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var product Product
-
-	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
-		return nil, err
-	}
-
-	vars := mux.Vars(r)
-
-	request := CreateProductEndpointRequest{
-		ProductID: vars["product_id"],
-		Product:   &product,
+	request := CreateInventorySnapshotEndpointRequest{
+		VendorID:          vars["vendor_id"],
+		ProductID:         vars["product_id"],
+		InventorySnapshot: &inventorySnapshot,
 	}
 	return request, nil
 }
