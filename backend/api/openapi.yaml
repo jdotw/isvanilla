@@ -362,6 +362,14 @@ components:
             $ref: "#/components/schemas/InventorySnapshot"
         vendor_id:
           type: string
+    MutateProductRequest:
+      description: "Syrup"
+      type: object
+      properties:
+        name:
+          type: string
+        stock_level:
+          type: integer
     InventorySnapshot:
       description: "Point-in-Time Inventory Data"
       type: object
