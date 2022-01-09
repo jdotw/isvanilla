@@ -382,10 +382,14 @@ components:
       properties:
         id:
           type: string
+          x-oapi-codegen-extra-tags:
+            gorm: "primaryKey;unique;type:uuid;default:uuid_generate_v4();"
         stock_level:
           type: integer
         product_id:
           type: string
+          x-oapi-codegen-extra-tags:
+            gorm: "not null"
         created_at:
           type: string
     # Errors
