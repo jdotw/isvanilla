@@ -356,8 +356,8 @@ components:
           type: string
         stock_level:
           type: integer
-        product:
-          $ref: "#/components/schemas/Product"
+        product_id:
+          type: string
         created_at:
           type: string
     # Errors
