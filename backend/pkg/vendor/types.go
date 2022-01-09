@@ -28,9 +28,7 @@ type Product struct {
 	InventorySnapshots *[]InventorySnapshot `json:"inventory_snapshots,omitempty"`
 	Name               *string              `json:"name,omitempty"`
 	StockLevel         *int                 `json:"stock_level,omitempty"`
-
-	// Syrup Vendor
-	Vendor *Vendor `json:"vendor,omitempty"`
+	VendorID           *string              `json:"vendor_id,omitempty"`
 }
 
 // Syrup Vendor

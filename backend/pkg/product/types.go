@@ -28,17 +28,7 @@ type Product struct {
 	InventorySnapshots *[]InventorySnapshot `json:"inventory_snapshots,omitempty"`
 	Name               *string              `json:"name,omitempty"`
 	StockLevel         *int                 `json:"stock_level,omitempty"`
-
-	// Syrup Vendor
-	Vendor *Vendor `json:"vendor,omitempty"`
-}
-
-// Syrup Vendor
-type Vendor struct {
-	ID         *string    `json:"id,omitempty"`
-	Name       *string    `json:"name,omitempty"`
-	Products   *[]Product `json:"products,omitempty"`
-	ScrapeType *string    `json:"scrape_type,omitempty"`
+	VendorID           *string              `json:"vendor_id,omitempty"`
 }
 
 // BadRequestError defines model for BadRequestError.
