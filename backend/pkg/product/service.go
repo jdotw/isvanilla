@@ -40,8 +40,8 @@ func (f *service) CreateProduct(ctx context.Context, vendorID string, product *P
 }
 
 func (f *service) DeleteProduct(ctx context.Context, vendorID string, productID string) error {
-	v, err := f.repository.DeleteProduct(ctx, vendorID, productID)
-	return v, err
+	err := f.repository.DeleteProduct(ctx, vendorID, productID)
+	return err
 }
 
 func (f *service) GetProduct(ctx context.Context, vendorID string, productID string) (*Product, error) {

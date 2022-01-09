@@ -7,12 +7,13 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"go.uber.org/zap"
-
 	"github.com/jdotw/go-utils/log"
 	"github.com/jdotw/go-utils/tracing"
 	"github.com/jdotw/syrupstock/pkg/inventory"
+	"github.com/jdotw/syrupstock/pkg/product"
+	"github.com/jdotw/syrupstock/pkg/vendor"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -34,6 +35,28 @@ func main() {
 		service := inventory.NewService(repo, logger, tracer)
 		endPoints := inventory.NewEndpointSet(service, logger, tracer)
 		inventory.AddHTTPRoutes(r, endPoints, logger, tracer)
+	}
+
+	// Product Service
+	{
+		repo, err := product.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		if err != nil {
+			logger.Bg().Fatal("Failed to create product repository", zap.Error(err))
+		}
+		service := product.NewService(repo, logger, tracer)
+		endPoints := product.NewEndpointSet(service, logger, tracer)
+		product.AddHTTPRoutes(r, endPoints, logger, tracer)
+	}
+
+	// Vendor Service
+	{
+		repo, err := vendor.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		if err != nil {
+			logger.Bg().Fatal("Failed to create vendor repository", zap.Error(err))
+		}
+		service := vendor.NewService(repo, logger, tracer)
+		endPoints := vendor.NewEndpointSet(service, logger, tracer)
+		vendor.AddHTTPRoutes(r, endPoints, logger, tracer)
 	}
 
 	// HTTP Mux

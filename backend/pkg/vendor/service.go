@@ -40,8 +40,8 @@ func (f *service) CreateVendor(ctx context.Context, vendor *Vendor) (*Vendor, er
 }
 
 func (f *service) DeleteVendor(ctx context.Context, vendorID string) error {
-	v, err := f.repository.DeleteVendor(ctx, vendorID)
-	return v, err
+	err := f.repository.DeleteVendor(ctx, vendorID)
+	return err
 }
 
 func (f *service) GetVendor(ctx context.Context, vendorID string) (*Vendor, error) {

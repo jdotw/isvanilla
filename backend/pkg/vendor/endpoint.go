@@ -99,11 +99,8 @@ func makeDeleteVendorEndpoint(s Service, logger log.Factory, tracer opentracing.
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		logger.For(ctx).Info("Vendor.DeleteVendorEndpoint received request")
 		req := request.(DeleteVendorEndpointRequest)
-		v, err := s.DeleteVendor(ctx, req.VendorID)
-		if err != nil {
-			return &v, err
-		}
-		return &v, nil
+		err := s.DeleteVendor(ctx, req.VendorID)
+		return nil, err
 	}
 }
 
@@ -147,13 +144,9 @@ func makeUpdateVendorEndpoint(s Service, logger log.Factory, tracer opentracing.
 
 // GetVendors
 
-type GetVendorsEndpointRequest struct {
-}
-
 func makeGetVendorsEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		logger.For(ctx).Info("Vendor.GetVendorsEndpoint received request")
-		req := request.(GetVendorsEndpointRequest)
 		v, err := s.GetVendors(ctx)
 		if err != nil {
 			return &v, err

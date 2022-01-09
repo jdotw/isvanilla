@@ -122,7 +122,5 @@ func decodeUpdateVendorEndpointRequest(_ context.Context, r *http.Request) (inte
 // GetVendors
 
 func decodeGetVendorsEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
-
-	request := GetVendorsEndpointRequest{}
-	return request, nil
+	return nil, nil
 }

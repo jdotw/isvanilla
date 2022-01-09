@@ -102,11 +102,8 @@ func makeDeleteProductEndpoint(s Service, logger log.Factory, tracer opentracing
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		logger.For(ctx).Info("Product.DeleteProductEndpoint received request")
 		req := request.(DeleteProductEndpointRequest)
-		v, err := s.DeleteProduct(ctx, req.VendorID, req.ProductID)
-		if err != nil {
-			return &v, err
-		}
-		return &v, nil
+		err := s.DeleteProduct(ctx, req.VendorID, req.ProductID)
+		return nil, err
 	}
 }
 
