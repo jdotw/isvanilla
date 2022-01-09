@@ -346,8 +346,8 @@ components:
           type: array
           items: 
             $ref: "#/components/schemas/InventorySnapshot"
-        vendor:
-          $ref: "#/components/schemas/Vendor"
+        vendor_id:
+          type: string
     InventorySnapshot:
       description: "Point-in-Time Inventory Data"
       type: object

@@ -16,12 +16,10 @@ type HTTPError struct {
 
 // Point-in-Time Inventory Data
 type InventorySnapshot struct {
-	CreatedAt *string `json:"created_at,omitempty"`
-	ID        *string `json:"id,omitempty"`
-
-	// Syrup
-	Product    *Product `json:"product,omitempty"`
-	StockLevel *int     `json:"stock_level,omitempty"`
+	CreatedAt  *string `json:"created_at,omitempty"`
+	ID         *string `json:"id,omitempty"`
+	ProductID  *string `json:"product_id,omitempty"`
+	StockLevel *int    `json:"stock_level,omitempty"`
 }
 
 // Syrup
