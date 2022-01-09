@@ -299,7 +299,7 @@ paths:
         content:
           application/json:            
             schema:
-              $ref: "#/components/schemas/InventorySnapshot"
+              $ref: "#/components/schemas/MutateInventorySnapshot"
       responses:
         "200":
           description: OK
@@ -392,6 +392,12 @@ components:
             gorm: "not null"
         created_at:
           type: string
+    MutateInventorySnapshot:
+      description: "Point-in-Time Inventory Data"
+      type: object
+      properties:
+        stock_level:
+          type: integer
     # Errors
     HTTPError:
       type: object

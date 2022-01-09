@@ -44,16 +44,12 @@ func NewGormRepository(ctx context.Context, connString string, logger log.Factor
 }
 
 func (p *repository) GetInventorySnapshots(ctx context.Context, vendorID string, productID string) (*[]InventorySnapshot, error) {
-
-	// TODO: Check the .First query as codegen is not able
-	// to elegantly deal with multiple request parameters
 	var v []InventorySnapshot
-	tx := p.db.WithContext(ctx).Model(&[]InventorySnapshot{}).First(&v, "vendorID = ? productID = ? ", vendorID, productID)
+	tx := p.db.WithContext(ctx).Find(&v, "product_id = ? ", productID)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return nil, recorderrors.ErrNotFound
 	}
 	return &v, tx.Error
-
 }
 
 func (p *repository) CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot *InventorySnapshot) (*InventorySnapshot, error) {
