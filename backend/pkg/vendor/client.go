@@ -96,7 +96,7 @@ type ClientInterface interface {
 	// CreateVendor request with any body
 	CreateVendorWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateVendor(ctx context.Context, vendor Vendor, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateVendor(ctx context.Context, createVendorRequest CreateVendorRequest, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteVendor request
 	DeleteVendor(ctx context.Context, vendorID string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -125,8 +125,8 @@ func (c *Client) CreateVendorWithBody(ctx context.Context, contentType string, b
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateVendor(ctx context.Context, vendor Vendor, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateVendorRequest(c.Server, vendor)
+func (c *Client) CreateVendor(ctx context.Context, createVendorRequest CreateVendorRequest, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateVendorRequest(c.Server, createVendorRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -198,9 +198,9 @@ func (c *Client) GetVendors(ctx context.Context, reqEditors ...RequestEditorFn) 
 }
 
 // NewCreateVendorRequest calls the generic CreateVendor builder with application/json body
-func NewCreateVendorRequest(server string, vendor Vendor) (*http.Request, error) {
+func NewCreateVendorRequest(server string, createVendorRequest CreateVendorRequest) (*http.Request, error) {
 	var bodyReader io.Reader
-	buf, err := json.Marshal(vendor)
+	buf, err := json.Marshal(createVendorRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -425,7 +425,7 @@ type ClientWithResponsesInterface interface {
 	// CreateVendor request with any body
 	CreateVendorWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateVendorResponse, error)
 
-	CreateVendorWithResponse(ctx context.Context, vendor Vendor, reqEditors ...RequestEditorFn) (*CreateVendorResponse, error)
+	CreateVendorWithResponse(ctx context.Context, createVendorRequest CreateVendorRequest, reqEditors ...RequestEditorFn) (*CreateVendorResponse, error)
 
 	// DeleteVendor request
 	DeleteVendorWithResponse(ctx context.Context, vendorID string, reqEditors ...RequestEditorFn) (*DeleteVendorResponse, error)
@@ -579,8 +579,8 @@ func (c *ClientWithResponses) CreateVendorWithBodyWithResponse(ctx context.Conte
 	return ParseCreateVendorResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateVendorWithResponse(ctx context.Context, vendor Vendor, reqEditors ...RequestEditorFn) (*CreateVendorResponse, error) {
-	rsp, err := c.CreateVendor(ctx, vendor, reqEditors...)
+func (c *ClientWithResponses) CreateVendorWithResponse(ctx context.Context, createVendorRequest CreateVendorRequest, reqEditors ...RequestEditorFn) (*CreateVendorResponse, error) {
+	rsp, err := c.CreateVendor(ctx, createVendorRequest, reqEditors...)
 	if err != nil {
 		return nil, err
 	}

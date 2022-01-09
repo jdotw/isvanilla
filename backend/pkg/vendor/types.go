@@ -9,6 +9,12 @@ import (
 	_ "embed"
 )
 
+// Create Syrup Vendor
+type CreateVendorRequest struct {
+	Name       *string `json:"name,omitempty"`
+	ScrapeType *string `json:"scrape_type,omitempty"`
+}
+
 // HTTPError defines model for HTTPError.
 type HTTPError struct {
 	Message *string `json:"message,omitempty"`

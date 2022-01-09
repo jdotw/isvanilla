@@ -65,14 +65,14 @@ func AddHTTPRoutes(r *mux.Router, endpoints EndpointSet, logger log.Factory, tra
 // CreateVendor
 
 func decodeCreateVendorEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var vendor Vendor
+	var vendor CreateVendorRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&vendor); err != nil {
 		return nil, err
 	}
 
 	request := CreateVendorEndpointRequest{
-		Vendor: &vendor,
+		CreateVendorRequest: &vendor,
 	}
 	return request, nil
 }

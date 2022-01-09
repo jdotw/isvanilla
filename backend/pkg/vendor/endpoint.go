@@ -74,14 +74,18 @@ func NewEndpointSet(s Service, logger log.Factory, tracer opentracing.Tracer) En
 // CreateVendor
 
 type CreateVendorEndpointRequest struct {
-	Vendor *Vendor
+	CreateVendorRequest *CreateVendorRequest
 }
 
 func makeCreateVendorEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		logger.For(ctx).Info("Vendor.CreateVendorEndpoint received request")
 		req := request.(CreateVendorEndpointRequest)
-		v, err := s.CreateVendor(ctx, req.Vendor)
+		c := Vendor{
+			Name:       req.CreateVendorRequest.Name,
+			ScrapeType: req.CreateVendorRequest.ScrapeType,
+		}
+		v, err := s.CreateVendor(ctx, &c)
 		if err != nil {
 			return &v, err
 		}
