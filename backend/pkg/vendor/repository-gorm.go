@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 
-	"github.com/12kmps/baas/recorderrors"
 	"github.com/jdotw/go-utils/log"
+	"github.com/jdotw/go-utils/recorderrors"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"

@@ -17,7 +17,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/jdotw/oapi3-gokit-codegen/pkg/runtime"
+	"github.com/jdotw/oapi-gokit-codegen/pkg/runtime"
 )
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function

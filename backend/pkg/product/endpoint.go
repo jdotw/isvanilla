@@ -4,10 +4,10 @@ import (
 	"context"
 	_ "embed"
 
-	"github.com/12kmps/baas/authz/opa"
 	"github.com/go-kit/kit/endpoint"
 	kittracing "github.com/go-kit/kit/tracing/opentracing"
 	"github.com/jdotw/go-utils/authn/jwt"
+	"github.com/jdotw/go-utils/authz/opa"
 	"github.com/jdotw/go-utils/log"
 	"github.com/opentracing/opentracing-go"
 )
