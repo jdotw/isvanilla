@@ -37,7 +37,7 @@ paths:
         content:
           application/json:            
             schema:
-              $ref: "#/components/schemas/Vendor"
+              $ref: "#/components/schemas/CreateVendorRequest"
       responses:
         "200":
           description: OK
@@ -332,6 +332,14 @@ components:
           type: array
           items: 
             $ref: "#/components/schemas/Product"
+    CreateVendorRequest:
+      description: "Create Syrup Vendor"
+      type: object
+      properties:
+        name:
+          type: string
+        scrape_type:
+          type: string
     Product:
       description: "Syrup"
       type: object
