@@ -94,14 +94,10 @@ func (p *repository) UpdateProduct(ctx context.Context, vendorID string, product
 }
 
 func (p *repository) GetProducts(ctx context.Context, vendorID string) (*[]Product, error) {
-
-	// TODO: Check the .First query as codegen is not able
-	// to elegantly deal with multiple request parameters
 	var v []Product
-	tx := p.db.WithContext(ctx).Model(&[]Product{}).First(&v, "vendorID = ? ", vendorID)
+	tx := p.db.WithContext(ctx).Find(&v, "vendor_id = ? ", vendorID)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return nil, recorderrors.ErrNotFound
 	}
 	return &v, tx.Error
-
 }

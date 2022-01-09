@@ -3,7 +3,6 @@ package vendor
 import (
 	"context"
 	_ "embed"
-	"errors"
 
 	"github.com/jdotw/go-utils/log"
 	"github.com/jdotw/go-utils/recorderrors"
@@ -45,32 +44,21 @@ func NewGormRepository(ctx context.Context, connString string, logger log.Factor
 }
 
 func (p *repository) CreateVendor(ctx context.Context, vendor *Vendor) (*Vendor, error) {
-
-	var tx *gorm.DB
-	var v Vendor
-
-	tx = p.db.WithContext(ctx).Create(&vendor)
+	tx := p.db.WithContext(ctx).Create(&vendor)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-
-	return &v, nil
-
+	return vendor, nil
 }
 
 func (p *repository) DeleteVendor(ctx context.Context, vendorID string) error {
-
-	// TODO: Unable to generate code for this Operation
-	return errors.New("Not Implemented")
-
+	tx := p.db.WithContext(ctx).Where("id = ? ", vendorID).Delete(&Vendor{})
+	return tx.Error
 }
 
 func (p *repository) GetVendor(ctx context.Context, vendorID string) (*Vendor, error) {
-
-	// TODO: Check the .First query as codegen is not able
-	// to elegantly deal with multiple request parameters
 	var v Vendor
-	tx := p.db.WithContext(ctx).Model(&Vendor{}).First(&v, "vendorID = ? ", vendorID)
+	tx := p.db.WithContext(ctx).Model(&Vendor{}).First(&v, "id = ? ", vendorID)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return nil, recorderrors.ErrNotFound
 	}
@@ -79,18 +67,11 @@ func (p *repository) GetVendor(ctx context.Context, vendorID string) (*Vendor, e
 }
 
 func (p *repository) UpdateVendor(ctx context.Context, vendorID string, vendor *Vendor) (*Vendor, error) {
-
-	// TODO: Check the .Where queries as codegen is not able
-	// to elegantly deal with multiple request parameters
-	var v Vendor
-
-	tx := p.db.WithContext(ctx).Model(&Vendor{}).Where("vendorID = ?", vendorID).UpdateColumns(vendor)
+	tx := p.db.WithContext(ctx).Model(&Vendor{}).Where("id = ?", vendorID).UpdateColumns(vendor)
 	if tx.RowsAffected == 0 {
 		return nil, recorderrors.ErrNotFound
 	}
-
-	return &v, tx.Error
-
+	return vendor, tx.Error
 }
 
 func (p *repository) GetVendors(ctx context.Context) (*[]Vendor, error) {
@@ -100,5 +81,4 @@ func (p *repository) GetVendors(ctx context.Context) (*[]Vendor, error) {
 		return nil, recorderrors.ErrNotFound
 	}
 	return &v, tx.Error
-
 }

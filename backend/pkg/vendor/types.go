@@ -39,10 +39,10 @@ type Product struct {
 
 // Syrup Vendor
 type Vendor struct {
-	ID         *string    `json:"id,omitempty"`
-	Name       *string    `json:"name,omitempty"`
+	ID         *string    `gorm:"primaryKey;unique;type:uuid;default:uuid_generate_v4();" json:"id,omitempty"`
+	Name       *string    `gorm:"not null" json:"name,omitempty"`
 	Products   *[]Product `json:"products,omitempty"`
-	ScrapeType *string    `json:"scrape_type,omitempty"`
+	ScrapeType *string    `gorm:"not null" json:"scrape_type,omitempty"`
 }
 
 // BadRequestError defines model for BadRequestError.
