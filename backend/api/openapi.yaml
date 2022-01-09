@@ -340,9 +340,9 @@ components:
           type: string
         name:
           type: string
-        stockLevel:
+        stock_level:
           type: integer
-        inventory_history: 
+        inventory_snapshots: 
           type: array
           items: 
             $ref: "#/components/schemas/InventorySnapshot"
@@ -354,7 +354,7 @@ components:
       properties:
         id:
           type: string
-        stockLevel:
+        stock_level:
           type: integer
         product:
           $ref: "#/components/schemas/Product"
