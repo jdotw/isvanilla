@@ -22,6 +22,11 @@ type InventorySnapshot struct {
 	StockLevel *int    `json:"stock_level,omitempty"`
 }
 
+// Point-in-Time Inventory Data
+type MutateInventorySnapshot struct {
+	StockLevel *int `json:"stock_level,omitempty"`
+}
+
 // BadRequestError defines model for BadRequestError.
 type BadRequestError HTTPError
 

@@ -99,7 +99,7 @@ type ClientInterface interface {
 	// CreateInventorySnapshot request with any body
 	CreateInventorySnapshotWithBody(ctx context.Context, vendorID string, productID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot InventorySnapshot, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, mutateInventorySnapshot MutateInventorySnapshot, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetInventorySnapshots(ctx context.Context, vendorID string, productID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -126,8 +126,8 @@ func (c *Client) CreateInventorySnapshotWithBody(ctx context.Context, vendorID s
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot InventorySnapshot, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateInventorySnapshotRequest(c.Server, vendorID, productID, inventorySnapshot)
+func (c *Client) CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, mutateInventorySnapshot MutateInventorySnapshot, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateInventorySnapshotRequest(c.Server, vendorID, productID, mutateInventorySnapshot)
 	if err != nil {
 		return nil, err
 	}
@@ -180,9 +180,9 @@ func NewGetInventorySnapshotsRequest(server string, vendorID string, productID s
 }
 
 // NewCreateInventorySnapshotRequest calls the generic CreateInventorySnapshot builder with application/json body
-func NewCreateInventorySnapshotRequest(server string, vendorID string, productID string, inventorySnapshot InventorySnapshot) (*http.Request, error) {
+func NewCreateInventorySnapshotRequest(server string, vendorID string, productID string, mutateInventorySnapshot MutateInventorySnapshot) (*http.Request, error) {
 	var bodyReader io.Reader
-	buf, err := json.Marshal(inventorySnapshot)
+	buf, err := json.Marshal(mutateInventorySnapshot)
 	if err != nil {
 		return nil, err
 	}
@@ -282,7 +282,7 @@ type ClientWithResponsesInterface interface {
 	// CreateInventorySnapshot request with any body
 	CreateInventorySnapshotWithBodyWithResponse(ctx context.Context, vendorID string, productID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInventorySnapshotResponse, error)
 
-	CreateInventorySnapshotWithResponse(ctx context.Context, vendorID string, productID string, inventorySnapshot InventorySnapshot, reqEditors ...RequestEditorFn) (*CreateInventorySnapshotResponse, error)
+	CreateInventorySnapshotWithResponse(ctx context.Context, vendorID string, productID string, mutateInventorySnapshot MutateInventorySnapshot, reqEditors ...RequestEditorFn) (*CreateInventorySnapshotResponse, error)
 }
 
 type GetInventorySnapshotsResponse struct {
@@ -353,8 +353,8 @@ func (c *ClientWithResponses) CreateInventorySnapshotWithBodyWithResponse(ctx co
 	return ParseCreateInventorySnapshotResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateInventorySnapshotWithResponse(ctx context.Context, vendorID string, productID string, inventorySnapshot InventorySnapshot, reqEditors ...RequestEditorFn) (*CreateInventorySnapshotResponse, error) {
-	rsp, err := c.CreateInventorySnapshot(ctx, vendorID, productID, inventorySnapshot, reqEditors...)
+func (c *ClientWithResponses) CreateInventorySnapshotWithResponse(ctx context.Context, vendorID string, productID string, mutateInventorySnapshot MutateInventorySnapshot, reqEditors ...RequestEditorFn) (*CreateInventorySnapshotResponse, error) {
+	rsp, err := c.CreateInventorySnapshot(ctx, vendorID, productID, mutateInventorySnapshot, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
