@@ -65,17 +65,14 @@ func AddHTTPRoutes(r *mux.Router, endpoints EndpointSet, logger log.Factory, tra
 // CreateProduct
 
 func decodeCreateProductEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var product Product
-
+	var product MutateProductRequest
 	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
 		return nil, err
 	}
-
 	vars := mux.Vars(r)
-
 	request := CreateProductEndpointRequest{
-		VendorID: vars["vendor_id"],
-		Product:  &product,
+		VendorID:             vars["vendor_id"],
+		MutateProductRequest: &product,
 	}
 	return request, nil
 }

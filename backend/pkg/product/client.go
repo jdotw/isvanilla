@@ -96,7 +96,7 @@ type ClientInterface interface {
 	// CreateProduct request with any body
 	CreateProductWithBody(ctx context.Context, vendorID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateProduct(ctx context.Context, vendorID string, product Product, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateProduct(ctx context.Context, vendorID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteProduct request
 	DeleteProduct(ctx context.Context, vendorID string, productID string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -107,7 +107,7 @@ type ClientInterface interface {
 	// UpdateProduct request with any body
 	UpdateProductWithBody(ctx context.Context, vendorID string, productID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateProduct(ctx context.Context, vendorID string, productID string, product Product, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateProduct(ctx context.Context, vendorID string, productID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetProducts request
 	GetProducts(ctx context.Context, vendorID string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -125,8 +125,8 @@ func (c *Client) CreateProductWithBody(ctx context.Context, vendorID string, con
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateProduct(ctx context.Context, vendorID string, product Product, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateProductRequest(c.Server, vendorID, product)
+func (c *Client) CreateProduct(ctx context.Context, vendorID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateProductRequest(c.Server, vendorID, mutateProductRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +173,8 @@ func (c *Client) UpdateProductWithBody(ctx context.Context, vendorID string, pro
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateProduct(ctx context.Context, vendorID string, productID string, product Product, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateProductRequest(c.Server, vendorID, productID, product)
+func (c *Client) UpdateProduct(ctx context.Context, vendorID string, productID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProductRequest(c.Server, vendorID, productID, mutateProductRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -198,9 +198,9 @@ func (c *Client) GetProducts(ctx context.Context, vendorID string, reqEditors ..
 }
 
 // NewCreateProductRequest calls the generic CreateProduct builder with application/json body
-func NewCreateProductRequest(server string, vendorID string, product Product) (*http.Request, error) {
+func NewCreateProductRequest(server string, vendorID string, mutateProductRequest MutateProductRequest) (*http.Request, error) {
 	var bodyReader io.Reader
-	buf, err := json.Marshal(product)
+	buf, err := json.Marshal(mutateProductRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -327,9 +327,9 @@ func NewGetProductRequest(server string, vendorID string, productID string) (*ht
 }
 
 // NewUpdateProductRequest calls the generic UpdateProduct builder with application/json body
-func NewUpdateProductRequest(server string, vendorID string, productID string, product Product) (*http.Request, error) {
+func NewUpdateProductRequest(server string, vendorID string, productID string, mutateProductRequest MutateProductRequest) (*http.Request, error) {
 	var bodyReader io.Reader
-	buf, err := json.Marshal(product)
+	buf, err := json.Marshal(mutateProductRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -460,7 +460,7 @@ type ClientWithResponsesInterface interface {
 	// CreateProduct request with any body
 	CreateProductWithBodyWithResponse(ctx context.Context, vendorID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProductResponse, error)
 
-	CreateProductWithResponse(ctx context.Context, vendorID string, product Product, reqEditors ...RequestEditorFn) (*CreateProductResponse, error)
+	CreateProductWithResponse(ctx context.Context, vendorID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*CreateProductResponse, error)
 
 	// DeleteProduct request
 	DeleteProductWithResponse(ctx context.Context, vendorID string, productID string, reqEditors ...RequestEditorFn) (*DeleteProductResponse, error)
@@ -471,7 +471,7 @@ type ClientWithResponsesInterface interface {
 	// UpdateProduct request with any body
 	UpdateProductWithBodyWithResponse(ctx context.Context, vendorID string, productID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
 
-	UpdateProductWithResponse(ctx context.Context, vendorID string, productID string, product Product, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
+	UpdateProductWithResponse(ctx context.Context, vendorID string, productID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
 
 	// GetProducts request
 	GetProductsWithResponse(ctx context.Context, vendorID string, reqEditors ...RequestEditorFn) (*GetProductsResponse, error)
@@ -614,8 +614,8 @@ func (c *ClientWithResponses) CreateProductWithBodyWithResponse(ctx context.Cont
 	return ParseCreateProductResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateProductWithResponse(ctx context.Context, vendorID string, product Product, reqEditors ...RequestEditorFn) (*CreateProductResponse, error) {
-	rsp, err := c.CreateProduct(ctx, vendorID, product, reqEditors...)
+func (c *ClientWithResponses) CreateProductWithResponse(ctx context.Context, vendorID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*CreateProductResponse, error) {
+	rsp, err := c.CreateProduct(ctx, vendorID, mutateProductRequest, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -649,8 +649,8 @@ func (c *ClientWithResponses) UpdateProductWithBodyWithResponse(ctx context.Cont
 	return ParseUpdateProductResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateProductWithResponse(ctx context.Context, vendorID string, productID string, product Product, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error) {
-	rsp, err := c.UpdateProduct(ctx, vendorID, productID, product, reqEditors...)
+func (c *ClientWithResponses) UpdateProductWithResponse(ctx context.Context, vendorID string, productID string, mutateProductRequest MutateProductRequest, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error) {
+	rsp, err := c.UpdateProduct(ctx, vendorID, productID, mutateProductRequest, reqEditors...)
 	if err != nil {
 		return nil, err
 	}

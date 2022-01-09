@@ -23,6 +23,12 @@ type InventorySnapshot struct {
 }
 
 // Syrup
+type MutateProductRequest struct {
+	Name       *string `json:"name,omitempty"`
+	StockLevel *int    `json:"stock_level,omitempty"`
+}
+
+// Syrup
 type Product struct {
 	ID                 *string              `json:"id,omitempty"`
 	InventorySnapshots *[]InventorySnapshot `json:"inventory_snapshots,omitempty"`
