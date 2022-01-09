@@ -17,8 +17,8 @@ type HTTPError struct {
 // Point-in-Time Inventory Data
 type InventorySnapshot struct {
 	CreatedAt  *string `json:"created_at,omitempty"`
-	ID         *string `json:"id,omitempty"`
-	ProductID  *string `json:"product_id,omitempty"`
+	ID         *string `gorm:"primaryKey;unique;type:uuid;default:uuid_generate_v4();" json:"id,omitempty"`
+	ProductID  *string `gorm:"not null" json:"product_id,omitempty"`
 	StockLevel *int    `json:"stock_level,omitempty"`
 }
 
@@ -30,11 +30,11 @@ type MutateProductRequest struct {
 
 // Syrup
 type Product struct {
-	ID                 *string              `json:"id,omitempty"`
+	ID                 *string              `gorm:"primaryKey;unique;type:uuid;default:uuid_generate_v4();" json:"id,omitempty"`
 	InventorySnapshots *[]InventorySnapshot `json:"inventory_snapshots,omitempty"`
-	Name               *string              `json:"name,omitempty"`
+	Name               *string              `gorm:"not null" json:"name,omitempty"`
 	StockLevel         *int                 `json:"stock_level,omitempty"`
-	VendorID           *string              `json:"vendor_id,omitempty"`
+	VendorID           *string              `gorm:"not null" json:"vendor_id,omitempty"`
 }
 
 // BadRequestError defines model for BadRequestError.
