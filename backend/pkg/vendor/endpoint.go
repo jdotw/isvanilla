@@ -45,7 +45,7 @@ func NewEndpointSet(s Service, logger log.Factory, tracer opentracing.Tracer) En
 	{
 		getVendorEndpoint = makeGetVendorEndpoint(s, logger, tracer)
 		getVendorEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.vendor.endpoint.authz.get_vendor")(getVendorEndpoint)
-		getVendorEndpoint = authn.NewMiddleware()(getVendorEndpoint)
+		// getVendorEndpoint = authn.NewMiddleware()(getVendorEndpoint)
 		getVendorEndpoint = kittracing.TraceServer(tracer, "GetVendorEndpoint")(getVendorEndpoint)
 	}
 	var updateVendorEndpoint endpoint.Endpoint
@@ -59,7 +59,7 @@ func NewEndpointSet(s Service, logger log.Factory, tracer opentracing.Tracer) En
 	{
 		getVendorsEndpoint = makeGetVendorsEndpoint(s, logger, tracer)
 		getVendorsEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.vendor.endpoint.authz.get_vendors")(getVendorsEndpoint)
-		getVendorsEndpoint = authn.NewMiddleware()(getVendorsEndpoint)
+		// getVendorsEndpoint = authn.NewMiddleware()(getVendorsEndpoint)
 		getVendorsEndpoint = kittracing.TraceServer(tracer, "GetVendorsEndpoint")(getVendorsEndpoint)
 	}
 	return EndpointSet{

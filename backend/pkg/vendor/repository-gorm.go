@@ -94,11 +94,8 @@ func (p *repository) UpdateVendor(ctx context.Context, vendorID string, vendor *
 }
 
 func (p *repository) GetVendors(ctx context.Context) (*[]Vendor, error) {
-
-	// TODO: Check the .First query as codegen is not able
-	// to elegantly deal with multiple request parameters
 	var v []Vendor
-	tx := p.db.WithContext(ctx).Model(&[]Vendor{}).First(&v, "")
+	tx := p.db.WithContext(ctx).Find(&v)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return nil, recorderrors.ErrNotFound
 	}
