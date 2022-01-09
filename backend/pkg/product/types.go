@@ -21,15 +21,15 @@ type InventorySnapshot struct {
 
 	// Syrup
 	Product    *Product `json:"product,omitempty"`
-	StockLevel *int     `json:"stockLevel,omitempty"`
+	StockLevel *int     `json:"stock_level,omitempty"`
 }
 
 // Syrup
 type Product struct {
-	ID               *string              `json:"id,omitempty"`
-	InventoryHistory *[]InventorySnapshot `json:"inventory_history,omitempty"`
-	Name             *string              `json:"name,omitempty"`
-	StockLevel       *int                 `json:"stockLevel,omitempty"`
+	ID                 *string              `json:"id,omitempty"`
+	InventorySnapshots *[]InventorySnapshot `json:"inventory_snapshots,omitempty"`
+	Name               *string              `json:"name,omitempty"`
+	StockLevel         *int                 `json:"stock_level,omitempty"`
 
 	// Syrup Vendor
 	Vendor *Vendor `json:"vendor,omitempty"`
