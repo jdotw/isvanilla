@@ -85,6 +85,7 @@ func makeCreateProductEndpoint(s Service, logger log.Factory, tracer opentracing
 		c := Product{
 			Name:       req.MutateProductRequest.Name,
 			StockLevel: req.MutateProductRequest.StockLevel,
+			VendorID:   &req.VendorID,
 		}
 		v, err := s.CreateProduct(ctx, req.VendorID, &c)
 		if err != nil {

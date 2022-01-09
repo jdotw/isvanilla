@@ -3,7 +3,6 @@ package product
 import (
 	"context"
 	_ "embed"
-	"errors"
 
 	"github.com/jdotw/go-utils/log"
 	"github.com/jdotw/go-utils/recorderrors"
@@ -45,24 +44,16 @@ func NewGormRepository(ctx context.Context, connString string, logger log.Factor
 }
 
 func (p *repository) CreateProduct(ctx context.Context, vendorID string, product *Product) (*Product, error) {
-
-	var tx *gorm.DB
-	var v Product
-
-	tx = p.db.WithContext(ctx).Create(&product)
+	tx := p.db.WithContext(ctx).Create(&product)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-
-	return &v, nil
-
+	return product, nil
 }
 
 func (p *repository) DeleteProduct(ctx context.Context, vendorID string, productID string) error {
-
-	// TODO: Unable to generate code for this Operation
-	return errors.New("Not Implemented")
-
+	tx := p.db.WithContext(ctx).Where("vendor_id = ? AND id = ?", vendorID, productID).Delete(&Product{})
+	return tx.Error
 }
 
 func (p *repository) GetProduct(ctx context.Context, vendorID string, productID string) (*Product, error) {
@@ -70,7 +61,7 @@ func (p *repository) GetProduct(ctx context.Context, vendorID string, productID 
 	// TODO: Check the .First query as codegen is not able
 	// to elegantly deal with multiple request parameters
 	var v Product
-	tx := p.db.WithContext(ctx).Model(&Product{}).First(&v, "vendorID = ? productID = ? ", vendorID, productID)
+	tx := p.db.WithContext(ctx).Model(&Product{}).First(&v, "vendor_id = ? AND id = ? ", vendorID, productID)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return nil, recorderrors.ErrNotFound
 	}
@@ -79,18 +70,11 @@ func (p *repository) GetProduct(ctx context.Context, vendorID string, productID 
 }
 
 func (p *repository) UpdateProduct(ctx context.Context, vendorID string, productID string, product *Product) (*Product, error) {
-
-	// TODO: Check the .Where queries as codegen is not able
-	// to elegantly deal with multiple request parameters
-	var v Product
-
-	tx := p.db.WithContext(ctx).Model(&Product{}).Where("vendorID = ?", vendorID).Where("productID = ?", productID).UpdateColumns(product)
+	tx := p.db.WithContext(ctx).Model(&Product{}).Where("vendor_id = ?", vendorID).Where("id = ?", productID).UpdateColumns(product)
 	if tx.RowsAffected == 0 {
 		return nil, recorderrors.ErrNotFound
 	}
-
-	return &v, tx.Error
-
+	return product, tx.Error
 }
 
 func (p *repository) GetProducts(ctx context.Context, vendorID string) (*[]Product, error) {
