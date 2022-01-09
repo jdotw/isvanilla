@@ -54,7 +54,7 @@ func decodeGetInventorySnapshotsEndpointRequest(_ context.Context, r *http.Reque
 // CreateInventorySnapshot
 
 func decodeCreateInventorySnapshotEndpointRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var inventorySnapshot InventorySnapshot
+	var inventorySnapshot MutateInventorySnapshot
 
 	if err := json.NewDecoder(r.Body).Decode(&inventorySnapshot); err != nil {
 		return nil, err

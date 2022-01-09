@@ -53,15 +53,9 @@ func (p *repository) GetInventorySnapshots(ctx context.Context, vendorID string,
 }
 
 func (p *repository) CreateInventorySnapshot(ctx context.Context, vendorID string, productID string, inventorySnapshot *InventorySnapshot) (*InventorySnapshot, error) {
-
-	var tx *gorm.DB
-	var v InventorySnapshot
-
-	tx = p.db.WithContext(ctx).Create(&inventorySnapshot)
+	tx := p.db.WithContext(ctx).Create(&inventorySnapshot)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-
-	return &v, nil
-
+	return inventorySnapshot, nil
 }

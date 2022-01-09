@@ -69,14 +69,18 @@ type CreateInventorySnapshotEndpointRequest struct {
 	VendorID  string
 	ProductID string
 
-	InventorySnapshot *InventorySnapshot
+	InventorySnapshot *MutateInventorySnapshot
 }
 
 func makeCreateInventorySnapshotEndpoint(s Service, logger log.Factory, tracer opentracing.Tracer) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		logger.For(ctx).Info("Inventory.CreateInventorySnapshotEndpoint received request")
 		req := request.(CreateInventorySnapshotEndpointRequest)
-		v, err := s.CreateInventorySnapshot(ctx, req.VendorID, req.ProductID, req.InventorySnapshot)
+		c := InventorySnapshot{
+			ProductID:  &req.ProductID,
+			StockLevel: req.InventorySnapshot.StockLevel,
+		}
+		v, err := s.CreateInventorySnapshot(ctx, req.VendorID, req.ProductID, &c)
 		if err != nil {
 			return &v, err
 		}
