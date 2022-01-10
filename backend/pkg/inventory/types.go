@@ -7,6 +7,7 @@ package inventory
 
 import (
 	_ "embed"
+	"time"
 )
 
 // HTTPError defines model for HTTPError.
@@ -16,10 +17,10 @@ type HTTPError struct {
 
 // Point-in-Time Inventory Data
 type InventorySnapshot struct {
-	CreatedAt  *string `json:"created_at,omitempty"`
-	ID         *string `gorm:"primaryKey;unique;type:uuid;default:uuid_generate_v4();" json:"id,omitempty"`
-	ProductID  *string `gorm:"not null" json:"product_id,omitempty"`
-	StockLevel *int    `json:"stock_level,omitempty"`
+	CreatedAt  *time.Time `json:"created_at,omitempty"`
+	ID         *string    `gorm:"primaryKey;unique;type:uuid;default:uuid_generate_v4();" json:"id,omitempty"`
+	ProductID  *string    `gorm:"not null" json:"product_id,omitempty"`
+	StockLevel *int       `json:"stock_level,omitempty"`
 }
 
 // Point-in-Time Inventory Data
