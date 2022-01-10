@@ -34,6 +34,7 @@ type Product struct {
 	InventorySnapshots *[]InventorySnapshot `json:"inventory_snapshots,omitempty"`
 	Name               *string              `gorm:"not null" json:"name,omitempty"`
 	StockLevel         *int                 `json:"stock_level,omitempty"`
+	Url                *string              `gorm:"not null" json:"url,omitempty"`
 	VendorID           *string              `gorm:"not null" json:"vendor_id,omitempty"`
 }
 

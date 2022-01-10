@@ -860,8 +860,6 @@ func ParseGetVendorsResponse(rsp *http.Response) (*GetVendorsResponse, error) {
 		HTTPResponse: rsp,
 	}
 
-	println("Content-type: ", rsp.Header.Get("Content-Type"))
-
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest []Vendor
