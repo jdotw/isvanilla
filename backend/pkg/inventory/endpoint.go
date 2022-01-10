@@ -3,6 +3,7 @@ package inventory
 import (
 	"context"
 	_ "embed"
+	"os"
 
 	"github.com/go-kit/kit/endpoint"
 	kittracing "github.com/go-kit/kit/tracing/opentracing"
@@ -21,7 +22,7 @@ type EndpointSet struct {
 var endpointPolicy string
 
 func NewEndpointSet(s Service, logger log.Factory, tracer opentracing.Tracer) EndpointSet {
-	authn := jwt.NewAuthenticator(logger, tracer)
+	authn := jwt.NewAuthenticator(logger, tracer, "https://"+os.Getenv("AUTH0_DOMAIN")+"/.well-known/jwks.json")
 	authz := opa.NewAuthorizor(logger, tracer)
 
 	var getInventorySnapshotsEndpoint endpoint.Endpoint
