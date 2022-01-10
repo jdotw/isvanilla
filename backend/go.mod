@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/go-kit/kit v0.12.0
 	github.com/gorilla/mux v1.8.0
-	github.com/jdotw/go-utils v0.0.0-20220106034742-902ec5b17e34
+	github.com/jdotw/go-utils v1.0.0
 	github.com/jdotw/oapi-gokit-codegen v1.9.0-jw
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/prometheus/client_golang v1.11.0
@@ -14,6 +14,8 @@ require (
 	gorm.io/gorm v1.22.4
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
+
+replace github.com/jdotw/go-utils => ../../go-utils
 
 require (
 	github.com/OneOfOne/xxhash v1.2.8 // indirect

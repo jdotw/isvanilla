@@ -358,6 +358,10 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             gorm: "not null"
+        url:
+          type: string
+          x-oapi-codegen-extra-tags:
+            gorm: "not null"
         stock_level:
           type: integer
         inventory_snapshots: 
