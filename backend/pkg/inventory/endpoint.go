@@ -29,7 +29,6 @@ func NewEndpointSet(s Service, logger log.Factory, tracer opentracing.Tracer) En
 	{
 		getInventorySnapshotsEndpoint = makeGetInventorySnapshotsEndpoint(s, logger, tracer)
 		getInventorySnapshotsEndpoint = authz.NewInProcessMiddleware(endpointPolicy, "data.inventory.endpoint.authz.get_inventory_snapshots")(getInventorySnapshotsEndpoint)
-		getInventorySnapshotsEndpoint = authn.NewMiddleware()(getInventorySnapshotsEndpoint)
 		getInventorySnapshotsEndpoint = kittracing.TraceServer(tracer, "GetInventorySnapshotsEndpoint")(getInventorySnapshotsEndpoint)
 	}
 	var createInventorySnapshotEndpoint endpoint.Endpoint
