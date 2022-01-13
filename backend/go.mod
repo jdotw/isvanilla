@@ -15,8 +15,6 @@ require (
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
-replace github.com/jdotw/go-utils => ../../go-utils
-
 require (
 	github.com/OneOfOne/xxhash v1.2.8 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
