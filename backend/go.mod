@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/go-kit/kit v0.12.0
 	github.com/gorilla/mux v1.8.0
-	github.com/jdotw/go-utils v1.0.0
+	github.com/jdotw/go-utils v1.0.2
 	github.com/jdotw/oapi-gokit-codegen v1.9.0-jw
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/prometheus/client_golang v1.11.0
