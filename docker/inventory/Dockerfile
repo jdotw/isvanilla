@@ -2,7 +2,7 @@ FROM golang AS build
 
 WORKDIR /app
 
-COPY ../../backend . 
+COPY backend . 
 
 RUN CGO_ENABLED=0 go build -o app cmd/inventory/main.go
 
