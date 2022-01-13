@@ -1,0 +1,40 @@
+jk8s:
+  dns:
+    fqdn: ${FQDN}
+    externalDNS:
+      enabled: true
+      zoneID: ${ZONE_ID}
+      aws:
+        serviceAccountName: external-dns
+  tls:
+    certManager:
+      enabled: true
+      email: admin@${FQDN}
+      aws:
+        serviceAccountName: cert-manager
+      selfSigned:
+        enabled: false
+      letsEncrypt:
+        staging:
+          enabled: true
+          email: admin@${FQDN}
+          route53:
+            zoneID: ${ZONE_ID}
+  secrets:
+    externalSecrets:
+      enabled: true
+      rdsSecretName: ${RDS_SECRET}
+      aws:
+        secretsManager:
+          argocdServiceAccountName: external-secrets
+          telemetryServiceAccountName: external-secrets
+          appServiceAccountName: external-secrets
+  telemetry:
+    jaeger:
+      storage:
+        es:
+          enabled: true
+          url: https://${ES_DOMAIN}
+          credentialsSecretName: ${ES_SECRET}
+        inMemory:
+          enabled: false
