@@ -69,7 +69,13 @@ export class EKSStack extends Stack {
       ],
     });
 
-    const repository = new ecr.Repository(this, "Repo", {
+    const inventoryRepo = new ecr.Repository(this, "InventoryRepo", {
+      repositoryName: "inventory",
+      imageScanOnPush: true,
+    });
+
+    const scrapeRepo = new ecr.Repository(this, "ScrapeRepo", {
+      repositoryName: "scrape",
       imageScanOnPush: true,
     });
   }
