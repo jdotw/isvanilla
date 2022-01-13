@@ -38,3 +38,8 @@ jk8s:
           credentialsSecretName: ${ES_SECRET}
         inMemory:
           enabled: false
+  apps: 
+    - name: isvanilla-app
+      repoURL: https://github.com/jdotw/isvanilla.git
+      targetRevision: HEAD
+      path: argocd/isvanilla-app
