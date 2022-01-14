@@ -1,3 +1,3 @@
-inventoryImage: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:7ce4b7843879a486aad1e938850515de0c5eeadd
+inventoryImage: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:7ce4b7843879a486aad1e938850515de0c5eeadd
 scrapeImage: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:97dbf72634ed46fc454593b5d37baa07d667cdbc
 fqdn: ""
