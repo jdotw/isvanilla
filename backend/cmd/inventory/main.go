@@ -34,7 +34,7 @@ func main() {
 
 	// Vendor Service
 	{
-		repo, err := vendor.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		repo, err := vendor.NewGormRepository(context.Background(), dsn, logger, tracer)
 		if err != nil {
 			logger.Bg().Fatal("Failed to create vendor repository", zap.Error(err))
 		}
