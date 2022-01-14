@@ -32,6 +32,8 @@ func main() {
 		dsn = "host=" + os.Getenv("POSTGRES_HOST") + "user=" + os.Getenv("POSTGRES_USERNAME") + "password=" + os.Getenv("POSTGRES_PASSWORD") + "dbname=isvanilla" + "port=" + os.Getenv("POSTGRES_PORT")
 	}
 
+	logger.Bg().Info("DB", zap.String("POSTGRES_HOST", os.Getenv("POSTGRES_HOST")))
+
 	// Vendor Service
 	{
 		repo, err := vendor.NewGormRepository(context.Background(), dsn, logger, tracer)
