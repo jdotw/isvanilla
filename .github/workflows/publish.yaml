@@ -30,12 +30,19 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
         INVENTORY_IMAGE_TAG: ${{ github.sha }}
+        SCRAPE_REPOSITORY: scrape
         SCRAPE_IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build Inventory docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$INVENTORY_IMAGE_TAG -f docker/inventory/Dockerfile .
-        echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$INVENTORY_IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$INVENTORY_IMAGE_TAG"
+        echo "Building Inventory image"
+        docker build -t $ECR_REGISTRY/inventory:$INVENTORY_IMAGE_TAG -f docker/inventory/Dockerfile .
+        echo "Pushing Inventory image to ECR..."
+        docker push $ECR_REGISTRY/inventory:$INVENTORY_IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/inventory:$INVENTORY_IMAGE_TAG"
+        # Build Inventory docker container and push it to ECR 
+        echo "Building Scrape image"
+        docker build -t $ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG -f docker/scrape/Dockerfile .
+        echo "Pushing Srape image to ECR..."
+        docker push $ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG"
