@@ -29,7 +29,7 @@ func main() {
 	// Craft PostgreSQL DSN
 	dsn := os.Getenv("POSTGRES_DSN")
 	if len(dsn) == 0 {
-		dsn = "host=" + os.Getenv("POSTGRES_HOST") + "user=" + os.Getenv("POSTGRES_USERNAME") + "password=" + os.Getenv("POSTGRES_PASSWORD") + "dbname=isvanilla" + "port=" + os.Getenv("POSTGRES_PORT")
+		dsn = "host=" + os.Getenv("POSTGRES_HOST") + " user=" + os.Getenv("POSTGRES_USERNAME") + " password=" + os.Getenv("POSTGRES_PASSWORD") + " dbname=isvanilla" + " port=" + os.Getenv("POSTGRES_PORT")
 	}
 
 	logger.Bg().Info("DB", zap.String("POSTGRES_HOST", os.Getenv("POSTGRES_HOST")))
