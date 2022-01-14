@@ -26,6 +26,12 @@ func main() {
 	// HTTP Router
 	r := mux.NewRouter()
 
+	// Craft PostgreSQL DSN
+	dsn := os.Getenv("POSTGRES_DSN")
+	if len(dsn) == 0 {
+		dsn = "host=" + os.Getenv("host") + "user=" + os.Getenv("user") + "password=" + os.Getenv("password") + "dbname=isvanilla" + "port=" + os.Getenv("port")
+	}
+
 	// Vendor Service
 	{
 		repo, err := vendor.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
