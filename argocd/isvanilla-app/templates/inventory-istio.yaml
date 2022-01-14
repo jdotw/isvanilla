@@ -2,7 +2,7 @@
 # apiVersion: networking.istio.io/v1alpha3
 # kind: Gateway
 # metadata:
-#   name: app-rollout-canary-kube
+#   name: inventory-rollout-kube
 #   labels:
 #     app.kubernetes.io/name: applications.argoproj.io
 #     app.kubernetes.io/part-of: argocd
@@ -20,12 +20,12 @@
 #         name: http
 #         protocol: HTTP
 #       hosts:
-#         - "app-rollout-canary.kube"
+#         - "inventory-rollout.kube"
 # ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: app-rollout-canary-vs
+  name: inventory-rollout-vs
   labels:
     app.kubernetes.io/name: applications.argoproj.io
     app.kubernetes.io/part-of: argocd
@@ -40,8 +40,8 @@ spec:
     - name: primary
       route:
         - destination:
-            host: app-rollout-canary-stable
+            host: inventory-rollout-stable
           weight: 100
         - destination:
-            host: app-rollout-canary
+            host: inventory-rollout
           weight: 0

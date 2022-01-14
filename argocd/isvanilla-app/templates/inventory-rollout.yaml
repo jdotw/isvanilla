@@ -4,21 +4,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: app-rollout-canary
+  name: inventory-rollout
 spec:
   replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: app-rollout-canary
+      app: inventory-rollout
   template:
     metadata:
       labels:
-        app: app-rollout-canary
+        app: inventory-rollout
     spec:
       containers:
         - name: rollouts-demo
-          image: "{{ .Values.image }}"
+          image: "{{ .Values.inventoryImage }}"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -39,11 +39,11 @@ spec:
         - setWeight: 50
         - pause:
             duration: 60
-      canaryService: app-rollout-canary # required
-      stableService: app-rollout-canary-stable # required
+      canaryService: inventory-rollout # required
+      stableService: inventory-rollout-stable # required
       trafficRouting:
         istio:
           virtualService:
-            name: app-rollout-canary-vs # required
+            name: inventory-rollout-vs # required
             routes:
               - primary # At least one route is required
