@@ -95,7 +95,7 @@ func (s *Scraper) getStockLevel(url string) (int, error) {
 		}
 		return i, nil
 	} else {
-		r := regexp.MustCompile(`Out of stock`)
+		r := regexp.MustCompile(`Out of [Ss]tock`)
 		m := r.FindStringSubmatch(sb)
 		if len(m) > 0 {
 			s.logger.Bg().Info("out of stock", zap.String("url", url))
