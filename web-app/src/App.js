@@ -53,11 +53,13 @@ function App() {
       ) : (
         <>
           <h1>Is Sugar Free Vanilla Syrup in Stock?</h1>
+
           {stockLevelError ? (
             "No idea 🤷‍♂️"
           ) : (
             <h2>{isInStock ? "YES! 😃 🎉" : "No... FML. 🤦‍♂️ 😖 😫"}</h2>
           )}
+          <Products vendors={vendors} />
           <h3>What else is there?</h3>
           <ul>
             {vendors?.map((v) => (
