@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "migration-job"
+  labels: {}
+  annotations: {}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: "migration-job-pod"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: db-migrations
+          image: "{{ .Values.registry }}/migrate:latest"
+          command: ["/bin/sh", "-c"]
+          args:
+            - git clone --single-branch --branch main {{ .Values.repoURL }} &&
+              ls -l backend
