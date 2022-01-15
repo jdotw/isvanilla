@@ -1,0 +1,9 @@
+{
+  "short_name": "Syrup Stock",
+  "name": "Is Sugar Free Vanilla Syrup In Stock?",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
