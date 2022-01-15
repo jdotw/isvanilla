@@ -61,10 +61,7 @@ export class OpenSearchStack extends Stack {
       vpc: vpc.vpc,
       vpcSubnets: [
         {
-          subnetType: ec2.SubnetType.PUBLIC,
-        },
-        {
-          subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
         },
       ],
     });
