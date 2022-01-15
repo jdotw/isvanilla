@@ -13,7 +13,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: db-migrations
-          image: "{{ .Values.registry }}/migrate:latest"
+          image: "{{ .Values.registry }}/migrate:41456dcee6978fda7273cd9be96687d847d41c8e"
           command: ["/bin/sh", "-c"]
           args:
             - git clone --single-branch --branch main {{ .Values.repoURL }} &&
