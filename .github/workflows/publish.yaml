@@ -31,8 +31,8 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         INVENTORY_IMAGE_TAG: ${{ github.sha }}
-        SCRAPE_REPOSITORY: scrape
         SCRAPE_IMAGE_TAG: ${{ github.sha }}
+        MIGRATE_IMAGE_TAG: latest
       run: |
         # Build Inventory docker container and push it to ECR 
         echo "Building Inventory image"
@@ -42,13 +42,13 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/inventory:$INVENTORY_IMAGE_TAG"
         # Build Scrape docker container and push it to ECR 
         echo "Building Scrape image"
-        docker build -t $ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG -f docker/scrape/Dockerfile .
+        docker build -t $ECR_REGISTRY/scrape:$SCRAPE_IMAGE_TAG -f docker/scrape/Dockerfile .
         echo "Pushing Scrape image to ECR..."
-        docker push $ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG"
+        docker push $ECR_REGISTRY/scrape:$SCRAPE_IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/scrape:$SCRAPE_IMAGE_TAG"
         # Build Inventory docker container and push it to ECR 
         echo "Building Migrate image"
-        docker build -t $ECR_REGISTRY/migrate:$INVENTORY_IMAGE_TAG -f docker/migrate/Dockerfile .
+        docker build -t $ECR_REGISTRY/migrate:$MIGRATE_IMAGE_TAG -f docker/migrate/Dockerfile .
         echo "Pushing Migrate image to ECR..."
-        docker push $ECR_REGISTRY/migrate:$INVENTORY_IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/migrate:$INVENTORY_IMAGE_TAG"
+        docker push $ECR_REGISTRY/migrate:$MIGRATE_IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/migrate:$MIGRATE_IMAGE_TAG"
