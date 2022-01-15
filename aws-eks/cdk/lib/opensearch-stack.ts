@@ -32,6 +32,8 @@ export class OpenSearchStack extends Stack {
     //   }
     // );
 
+    const { vpc } = props!;
+
     const prodDomain = new opensearch.Domain(this, "Domain", {
       version: opensearch.EngineVersion.OPENSEARCH_1_0,
       capacity: {
@@ -56,6 +58,15 @@ export class OpenSearchStack extends Stack {
       fineGrainedAccessControl: {
         masterUserName: "master-user",
       },
+      vpc: vpc.vpc,
+      vpcSubnets: [
+        {
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+        {
+          subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
+        },
+      ],
     });
 
     new cdk.CfnOutput(this, "OpenSearchDomain", {

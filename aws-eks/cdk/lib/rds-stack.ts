@@ -37,9 +37,10 @@ export class RDSStack extends Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       deletionProtection: false,
       publiclyAccessible: false,
+      databaseName: "isvanilla",
     });
 
-    new cdk.CfnOutput(this, "Endpoint", {
+    new cdk.CfnOutput(this, "Host", {
       value: this.db.instanceEndpoint.hostname,
     });
 

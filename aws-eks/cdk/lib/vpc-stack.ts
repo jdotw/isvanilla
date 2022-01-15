@@ -15,12 +15,17 @@ export class VPCStack extends Stack {
 
     this.vpc = new ec2.Vpc(this, "VPC", {
       cidr: "10.0.0.0/16",
-      natGateways: 0,
+      natGateways: 1,
       maxAzs: 3,
       subnetConfiguration: [
         {
           name: "public-subnet-1",
           subnetType: ec2.SubnetType.PUBLIC,
+          cidrMask: 24,
+        },
+        {
+          name: "private-subnet-1",
+          subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
           cidrMask: 24,
         },
         {

@@ -10,6 +10,7 @@ import { ManagedPolicy } from "aws-cdk-lib/aws-iam";
 import { DNSStack } from "./dns-stack";
 import { VPCStack } from "./vpc-stack";
 import { NodegroupAmiType } from "aws-cdk-lib/aws-eks";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
 // import { ArgoCDStack } from "./argocd-stack";
 
 export interface EKSStackProps extends StackProps {
@@ -22,7 +23,7 @@ export class EKSStack extends Stack {
   constructor(scope: Construct, id: string, props?: EKSStackProps) {
     super(scope, id, props);
 
-    const { name, rds, dns } = props!;
+    const { name, rds, dns, vpc } = props!;
 
     // EKS Cluster
 
@@ -31,6 +32,15 @@ export class EKSStack extends Stack {
     });
 
     this.cluster = new eks.Cluster(this, `${name}Cluster`, {
+      vpc: props!.vpc.vpc,
+      vpcSubnets: [
+        {
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+        {
+          subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
+        },
+      ],
       clusterName: name,
       mastersRole: clusterAdmin,
       version: eks.KubernetesVersion.V1_21,
