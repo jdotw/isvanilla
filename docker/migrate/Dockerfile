@@ -1,0 +1,4 @@
+FROM golang:alpine AS builder
+RUN apk add --no-cache git gcc g++
+RUN go get -v github.com/rubenv/sql-migrate/sql-migrate
+RUN mv /go/bin/sql-migrate /bin/sql-migrate

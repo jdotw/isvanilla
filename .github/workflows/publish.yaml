@@ -40,9 +40,15 @@ jobs:
         echo "Pushing Inventory image to ECR..."
         docker push $ECR_REGISTRY/inventory:$INVENTORY_IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/inventory:$INVENTORY_IMAGE_TAG"
-        # Build Inventory docker container and push it to ECR 
+        # Build Scrape docker container and push it to ECR 
         echo "Building Scrape image"
         docker build -t $ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG -f docker/scrape/Dockerfile .
-        echo "Pushing Srape image to ECR..."
+        echo "Pushing Scrape image to ECR..."
         docker push $ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/scrape:$INVENTORY_IMAGE_TAG"
+        # Build Inventory docker container and push it to ECR 
+        echo "Building Migrate image"
+        docker build -t $ECR_REGISTRY/migrate:$INVENTORY_IMAGE_TAG -f docker/migrate/Dockerfile .
+        echo "Pushing Migrate image to ECR..."
+        docker push $ECR_REGISTRY/migrate:$INVENTORY_IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/migrate:$INVENTORY_IMAGE_TAG"
