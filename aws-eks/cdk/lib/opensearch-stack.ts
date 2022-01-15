@@ -16,22 +16,6 @@ export class OpenSearchStack extends Stack {
   constructor(scope: Construct, id: string, props?: OpenSearchStackProps) {
     super(scope, id, props);
 
-    // const masterUserSecret = new secretsmanager.Secret(
-    //   this,
-    //   "MasterUserSecret"
-    // );
-
-    // const masterUserSecret = new secretsmanager.Secret(
-    //   this,
-    //   "MasterUserSecret",
-    //   {
-    //     generateSecretString: {
-    //       secretStringTemplate: JSON.stringify({ username: "master-user" }),
-    //       generateStringKey: "password",
-    //     },
-    //   }
-    // );
-
     const { vpc } = props!;
 
     const prodDomain = new opensearch.Domain(this, "Domain", {
