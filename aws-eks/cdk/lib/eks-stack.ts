@@ -66,7 +66,7 @@ export class EKSStack extends Stack {
       maxSize: 5,
     });
 
-    // rds.db.connections.allowFrom(this.cluster, ec2.Port.tcp(5432));
+    rds.db.connections.allowFrom(this.cluster, ec2.Port.tcp(5432));
 
     // Container Registry
 
@@ -86,6 +86,11 @@ export class EKSStack extends Stack {
 
     const scrapeRepo = new ecr.Repository(this, "ScrapeRepo", {
       repositoryName: "scrape",
+      imageScanOnPush: true,
+    });
+
+    const migrateRepo = new ecr.Repository(this, "MigrateRepo", {
+      repositoryName: "migrate",
       imageScanOnPush: true,
     });
   }
