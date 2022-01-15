@@ -1,7 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sql-migration
+data:
+  config.yaml: |
+    production:
+      dialect: postgres
+      datasource: dbname={{ .Values.db.name }} sslmode={{ .Values.db.sslmode }}
+      dir: backend/db/migrations
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "migration-job"
+  name: sql-migration
   labels: {}
   annotations: {}
 spec:
@@ -19,4 +30,14 @@ spec:
             - "-c"
             - |
                 git clone --single-branch --branch main {{ .Values.repoURL }} &&
-                ls -al isvanilla/backend
+                cd isvanilla &&
+                ls -al backend &&
+                cat /config/config.yaml &&
+                /bin/sql-migrate up -config=/config/config.yaml -env="{{ .Values.environment }} -dryrun"
+          envFrom:
+            - key: rds
+          volumeMounts:
+            - name: sql-migration
+              mountPath: "/config/config.yaml"
+              subPath: "config.yaml"
+              readOnly: true
