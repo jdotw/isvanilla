@@ -14,8 +14,9 @@ spec:
       containers:
         - name: db-migrations
           image: "{{ .Values.registry }}/migrate:latest"
-          command: ["/bin/sh", "-c"]
+          command: ["/bin/sh"]
           args:
+            - "-c"
             - |
-              git clone --single-branch --branch main {{ .Values.repoURL }} &&
-              ls -al isvanilla/backend
+                git clone --single-branch --branch main {{ .Values.repoURL }} &&
+                ls -al isvanilla/backend
