@@ -17,4 +17,4 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - git clone --single-branch --branch main {{ .Values.repoURL }} &&
-              ls -al .
+              ls -al isvanilla/backend
