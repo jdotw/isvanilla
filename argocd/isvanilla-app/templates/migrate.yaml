@@ -2,8 +2,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "migration-job"
-  # labels: {}
-  # annotations: {}
+  labels: {}
+  annotations: {}
 spec:
   backoffLimit: 0
   template:
