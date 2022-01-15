@@ -10,20 +10,20 @@ const OtherProducts = (props: Props) => {
   return (
     <div>
       <h3>What else is there?</h3>
-      <ul>
+      <div>
         {vendors?.map((v) => (
-          <li>
+          <div key={v.id}>
             {v.name}
-            <ul>
+            <div>
               {v.products?.map((p) => (
-                <li>
+                <div key={p.id}>
                   {p.name} - stock level {p.stock_level}
-                </li>
+                </div>
               ))}
-            </ul>
-          </li>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

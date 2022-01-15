@@ -5,6 +5,7 @@ import "./App.css";
 import { Vendor, Product } from "./model/types";
 import SFVStockHero from "./components/SFVStockHero";
 import Loading from "./components/Loading";
+import e from "express";
 
 const apiURL = "http://localhost:8080";
 
@@ -25,7 +26,7 @@ function App() {
           );
           v.products = products;
 
-          if (v.name === "gloria_jeans") {
+          if (v.name === "Gloria Jeans") {
             const sfv = products.find(
               (p: Product) => p.name === "Sugar Free Vanilla"
             );
@@ -37,6 +38,9 @@ function App() {
               );
               console.error("Failed to find Sugar Free Vanilla product");
             }
+          } else {
+            setStockLevelError(new Error("Failed to find GJ in vendors"));
+            console.error("Failed to find GJ in vendors");
           }
           vendors[i] = v;
         }

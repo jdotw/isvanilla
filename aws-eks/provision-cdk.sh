@@ -6,5 +6,6 @@ CDK_DEFAULT_REGION=ap-southeast-2
 STACK_NAME=isvanilla
 
 cd cdk
+aws iam create-service-linked-role --aws-service-name es.amazonaws.com
 STACK_NAME=$STACK_NAME cdk deploy --all
 

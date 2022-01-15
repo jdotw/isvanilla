@@ -21,9 +21,9 @@ export class OpenSearchStack extends Stack {
     const prodDomain = new opensearch.Domain(this, "Domain", {
       version: opensearch.EngineVersion.OPENSEARCH_1_0,
       capacity: {
-        masterNodes: 2,
+        masterNodes: 3,
         masterNodeInstanceType: "t3.small.search",
-        dataNodes: 1,
+        dataNodes: 2,
         dataNodeInstanceType: "t3.small.search",
       },
       ebs: {
@@ -43,11 +43,9 @@ export class OpenSearchStack extends Stack {
         masterUserName: "master-user",
       },
       vpc: vpc.vpc,
-      vpcSubnets: [
-        {
-          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-        },
-      ],
+      zoneAwareness: {
+        enabled: true,
+      },
     });
 
     new cdk.CfnOutput(this, "OpenSearchDomain", {
