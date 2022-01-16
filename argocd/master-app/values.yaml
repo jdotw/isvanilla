@@ -1,7 +1,7 @@
 inventory:
   app:
     name: "inventory"
-    env:
+    extraEnv:
       AUTH0_DOMAIN: "isvanilla.au.auth0.com"
     image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:a2cb04c63e87c7f1095a4407af6327fe0027e204
   virtualService:
@@ -16,7 +16,7 @@ inventory:
 scrape:
   app:
     name: "scrape"
-    env:
+    extraEnv:
       AUTH0_DOMAIN: "isvanilla.au.auth0.com"
     image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:97dbf72634ed46fc454593b5d37baa07d667cdbc
   virtualService:

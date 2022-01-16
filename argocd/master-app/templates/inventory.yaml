@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://jdotw.github.io/jk8s
     chart: canary-rollout
-    targetRevision: "1.0.4"
+    targetRevision: "1.0.5"
     helm:
       releaseName: inventory
       values: |
