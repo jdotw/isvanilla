@@ -8,4 +8,5 @@ db:
   sslmode: require
 environment: production
 env:
-  AUTH0_DOMAIN: "isvanilla.au.auth0.com"
+  - name: AUTH0_DOMAIN"
+    value: isvanilla.au.auth0.com"
