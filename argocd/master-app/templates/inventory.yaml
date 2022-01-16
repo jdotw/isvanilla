@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: inventory
+  namespace: "{{ .Values.argocd.namespace }}"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -15,7 +16,7 @@ spec:
       values: |
         {{ toYaml .Values.inventory | nindent 8 }}
   destination:
-    namespace: "{{ .Values.argocd.namespace }}"
+    namespace: app
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
