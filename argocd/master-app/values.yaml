@@ -21,7 +21,7 @@ scrape:
       - name: AUTH0_DOMAIN
         value: "isvanilla.au.auth0.com"
       - name: INVENTORY_URL
-        value: "http://api.syrupstock.com"
+        value: "http://inventory-vs"
       - name: LOOP
         value: "1"
       - name: LOOP_DELAY

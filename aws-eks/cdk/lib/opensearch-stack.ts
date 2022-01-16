@@ -47,6 +47,7 @@ export class OpenSearchStack extends Stack {
         enabled: true,
       },
     });
+    this.opensearch = prodDomain;
 
     new cdk.CfnOutput(this, "OpenSearchDomain", {
       value: prodDomain.domainEndpoint,
