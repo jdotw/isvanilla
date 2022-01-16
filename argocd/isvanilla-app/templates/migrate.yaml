@@ -36,7 +36,7 @@ spec:
                 cd isvanilla &&
                 ls -al backend &&
                 cat /config/config.yaml &&
-                /bin/sql-migrate up -config=/config/config.yaml -env="{{ .Values.environment }}" -dryrun
+                /bin/sql-migrate up -config=/config/config.yaml -env="{{ .Values.environment }}"
           envFrom:
             - secretRef: 
                 name: rds
