@@ -26,6 +26,8 @@ func main() {
 		inventoryURL = "http://localhost:8080"
 	}
 
+	logger.Bg().Info("inventory", zap.String("inventoryURL", inventoryURL))
+
 	vc, err := vendor.NewClientWithResponses(inventoryURL)
 	if err != nil {
 		logger.Bg().Fatal("failed to create vendor client", zap.Error(err))
