@@ -6,4 +6,4 @@ repoURL: https://github.com/jdotw/isvanilla.git
 db:
   name: ""
   sslmode: "verify-full"
-environment: product
+environment: production
