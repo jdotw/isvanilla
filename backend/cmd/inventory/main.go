@@ -48,7 +48,7 @@ func main() {
 	// Product Service
 	var productService *product.Service
 	{
-		repo, err := product.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		repo, err := product.NewGormRepository(context.Background(), dsn, logger, tracer)
 		if err != nil {
 			logger.Bg().Fatal("Failed to create product repository", zap.Error(err))
 		}
@@ -60,7 +60,7 @@ func main() {
 
 	// Inventory Service
 	{
-		repo, err := inventory.NewGormRepository(context.Background(), os.Getenv("POSTGRES_DSN"), logger, tracer)
+		repo, err := inventory.NewGormRepository(context.Background(), dsn, logger, tracer)
 		if err != nil {
 			logger.Bg().Fatal("Failed to create inventory repository", zap.Error(err))
 		}
