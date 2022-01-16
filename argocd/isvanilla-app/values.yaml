@@ -4,6 +4,6 @@ registry: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com
 fqdn: ""
 repoURL: https://github.com/jdotw/isvanilla.git
 db:
-  name: "isvanilla"
-  sslmode: "require"
+  name: isvanilla
+  sslmode: prefer
 environment: production
