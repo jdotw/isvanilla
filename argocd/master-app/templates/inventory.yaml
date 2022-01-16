@@ -17,8 +17,8 @@ spec:
       values: |
         {{ toYaml .Values.inventory | nindent 8 }}
   destination:
-    namespace: external-dns
-    server: "{{ .Values.spec.destination.server }}"
+    namespace: app
+    server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
