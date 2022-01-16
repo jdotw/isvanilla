@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrape-deployment
+  labels:
+    app: scrape
+spec:
+  selector:
+    matchLabels:
+      app: scrape
+  template:
+    metadata:
+      labels:
+        app: scrape
+    spec:
+      containers:
+        - name: scrape
+          image: {{ .Values.scrape.app.image }}
+          ports:
+          - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: rds
+          env:
+            {{ toYaml .Values.scrape.app.extraEnv | nindent 12 }}
