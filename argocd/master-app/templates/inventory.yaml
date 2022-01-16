@@ -10,11 +10,10 @@ spec:
   source:
     repoURL: https://jdotw.github.io/jk8s
     chart: canary-rollout
-    targetRevision: "1.0.9"
+    targetRevision: "1.0.10"
     helm:
       releaseName: inventory
-      values: |
-        {{ toYaml .Values.inventory | nindent 8 }}
+      values: "{{ toYaml .Values.inventory | nindent 8 }}"
   destination:
     namespace: app
     server: https://kubernetes.default.svc
