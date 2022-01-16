@@ -5,5 +5,5 @@ fqdn: ""
 repoURL: https://github.com/jdotw/isvanilla.git
 db:
   name: isvanilla
-  sslmode: prefer
+  sslmode: require
 environment: production
