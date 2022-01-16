@@ -40,7 +40,7 @@ spec:
           envFrom:
             - secretRef: 
                 name: rds
-          env: |
+          env:
             {{ toYaml .Values.env | nindent 12 }}
           volumeMounts:
             - name: sql-migration
