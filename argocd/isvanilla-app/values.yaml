@@ -1,7 +1,8 @@
 app:
   name: "isvanilla-inventory"
   env:
-    AUTH0_DOMAIN: "isvanilla.au.auth0.cominventoryImage: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:e1597fc40bac1a1254fbf58f2528c22fb2808fe3"
+    AUTH0_DOMAIN: "isvanilla.au.auth0.com"
+inventoryImage: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:e1597fc40bac1a1254fbf58f2528c22fb2808fe3
 scrapeImage: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:97dbf72634ed46fc454593b5d37baa07d667cdbc
 registry: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com
 fqdn: ""
