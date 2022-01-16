@@ -9,4 +9,4 @@ db:
 environment: production
 env:
   - name: AUTH0_DOMAIN
-    value: isvanilla.au.auth0.com"
+    value: isvanilla.au.auth0.com
