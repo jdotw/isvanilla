@@ -40,6 +40,8 @@ spec:
           envFrom:
             - secretRef: 
                 name: rds
+          env: |
+            {{ toYaml .Values.env | nindent 12 }}
           volumeMounts:
             - name: sql-migration
               mountPath: "/config/config.yaml"
