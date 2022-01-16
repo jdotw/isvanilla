@@ -11,6 +11,7 @@ import { DNSStack } from "./dns-stack";
 import { VPCStack } from "./vpc-stack";
 import { NodegroupAmiType } from "aws-cdk-lib/aws-eks";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { OpenSearchStack } from "./opensearch-stack";
 // import { ArgoCDStack } from "./argocd-stack";
 
 export interface EKSStackProps extends StackProps {
@@ -18,12 +19,13 @@ export interface EKSStackProps extends StackProps {
   vpc: VPCStack;
   rds: RDSStack;
   dns: DNSStack;
+  opensearch: OpenSearchStack;
 }
 export class EKSStack extends Stack {
   constructor(scope: Construct, id: string, props?: EKSStackProps) {
     super(scope, id, props);
 
-    const { name, rds, dns, vpc } = props!;
+    const { name, rds, dns, vpc, opensearch } = props!;
 
     // EKS Cluster
 
@@ -67,6 +69,10 @@ export class EKSStack extends Stack {
     });
 
     rds.db.connections.allowFrom(this.cluster, ec2.Port.tcp(5432));
+    opensearch.opensearch.connections.allowFrom(
+      this.cluster,
+      ec2.Port.tcp(443)
+    );
 
     // Container Registry
 

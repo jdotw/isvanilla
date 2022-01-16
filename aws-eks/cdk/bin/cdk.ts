@@ -25,11 +25,12 @@ const rds = new RDSStack(app, "RDSStack", {
   vpc,
 });
 
+const opensearch = new OpenSearchStack(app, "OpenSearchStack", { vpc });
+
 const cluster = new EKSStack(app, "EKSStack", {
   name,
   vpc,
   rds,
   dns,
+  opensearch,
 });
-
-const opensearch = new OpenSearchStack(app, "OpenSearchStack", { vpc });

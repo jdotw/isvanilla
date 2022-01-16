@@ -67,5 +67,5 @@ export class OpenSearchStack extends Stack {
     });
   }
 
-  readonly db: DatabaseInstance;
+  readonly opensearch: opensearch.Domain;
 }
