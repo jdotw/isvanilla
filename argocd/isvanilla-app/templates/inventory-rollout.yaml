@@ -25,14 +25,8 @@ spec:
           envFrom:
             - secretRef: 
                 name: rds
-          env:
-            {{ toYaml .Values.env | nindent 12 }}
-          # env:
-          #   - name: POSTGRES_DSN
-          #     valueFrom:
-          #       secretKeyRef:
-          #         name: rds-credentials
-          #         key: dsn
+            - configMapRef:
+                name: "{{ .Values.app.name }}"
   strategy:
     canary:
       steps:
