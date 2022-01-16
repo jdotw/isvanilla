@@ -8,6 +8,7 @@ inventory:
   virtualService:
     hosts:
       - api.syrupstock.com
+      - inventory
   db:
     name: isvanilla
     migrations:
