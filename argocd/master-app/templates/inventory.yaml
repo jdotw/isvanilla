@@ -4,8 +4,6 @@ metadata:
   name: inventory
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "-6"
 spec:
   project: default
   source:
@@ -17,7 +15,7 @@ spec:
       values: |
         {{ toYaml .Values.inventory | nindent 8 }}
   destination:
-    namespace: app
+    namespace: "{{ .Values.argocd.namespace }}"
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

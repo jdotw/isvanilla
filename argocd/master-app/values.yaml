@@ -22,3 +22,5 @@ scrape:
   virtualService:
     hosts:
       - api.syrupstock.com
+argocd:
+  namespace: ""
