@@ -35,7 +35,8 @@ spec:
                 cat /config/config.yaml &&
                 /bin/sql-migrate up -config=/config/config.yaml -env="{{ .Values.environment }} -dryrun"
           envFrom:
-            - key: rds
+            - secretRef: 
+                name: rds
           volumeMounts:
             - name: sql-migration
               mountPath: "/config/config.yaml"
