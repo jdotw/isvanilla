@@ -4,12 +4,10 @@ metadata:
   name: scrape-deployment
   labels:
     app: scrape
-    version: "1.0.0"
 spec:
   selector:
     matchLabels:
       app: scrape
-      version: "1.0.0"
   template:
     metadata:
       labels:
