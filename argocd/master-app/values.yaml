@@ -20,7 +20,8 @@ scrape:
     extraEnv:
       - name: AUTH0_DOMAIN
         value: "isvanilla.au.auth0.com"
-    image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:97dbf72634ed46fc454593b5d37baa07d667cdbc
+    image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:2bc2b648beb951072ee573b14fd15745fd06c8e1
+    replicas: 1
   virtualService:
     hosts:
       - api.syrupstock.com

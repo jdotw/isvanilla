@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: inventory
+  name: scrape
   namespace: "{{ .Values.argocd.namespace }}"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,9 +12,9 @@ spec:
     chart: canary-rollout
     targetRevision: "1.0.12"
     helm:
-      releaseName: inventory
+      releaseName: scrape
       values: |
-        {{ toYaml .Values.inventory | nindent 8 }}
+        {{ toYaml .Values.scrape | nindent 8 }}
   destination:
     namespace: app
     server: https://kubernetes.default.svc
