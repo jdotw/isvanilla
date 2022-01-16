@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sql-migration
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
 data:
   config.yaml: |
     production:
@@ -14,7 +16,8 @@ kind: Job
 metadata:
   name: sql-migration
   labels: {}
-  annotations: {}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   backoffLimit: 0
   template:
