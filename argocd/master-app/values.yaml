@@ -1,0 +1,24 @@
+inventory:
+  app:
+    name: "inventory"
+    env:
+      AUTH0_DOMAIN: "isvanilla.au.auth0.com"
+    image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:a2cb04c63e87c7f1095a4407af6327fe0027e204
+  virtualService:
+    hosts:
+      - api.syrupstock.com
+  db:
+    name: isvanilla
+    migrations:
+      image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/migrate:latest
+      repoURL: https://github.com/jdotw/isvanilla.git
+      path: backend/db/migrations
+scrape:
+  app:
+    name: "scrape"
+    env:
+      AUTH0_DOMAIN: "isvanilla.au.auth0.com"
+    image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:97dbf72634ed46fc454593b5d37baa07d667cdbc
+  virtualService:
+    hosts:
+      - api.syrupstock.com

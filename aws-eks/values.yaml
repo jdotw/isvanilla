@@ -41,7 +41,7 @@ jk8s:
   rds:
     host: ${RDS_HOST}
   apps: 
-    - name: isvanilla-app
+    - name: isvanilla-master
       repoURL: https://github.com/jdotw/isvanilla.git
       targetRevision: HEAD
-      path: argocd/isvanilla-app
+      path: argocd/master-app
