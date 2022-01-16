@@ -21,19 +21,22 @@ func main() {
 	logger, metricsFactory := log.Init(serviceName)
 	tracer := tracing.Init(serviceName, metricsFactory, logger)
 
-	clientHost := "http://localhost:8080"
+	inventoryURL := os.Getenv("INVENTORY_URL")
+	if len(inventoryURL) == 0 {
+		inventoryURL = "http://localhost:8080"
+	}
 
-	vc, err := vendor.NewClientWithResponses(clientHost)
+	vc, err := vendor.NewClientWithResponses(inventoryURL)
 	if err != nil {
 		logger.Bg().Fatal("failed to create vendor client", zap.Error(err))
 	}
 
-	pc, err := product.NewClientWithResponses(clientHost)
+	pc, err := product.NewClientWithResponses(inventoryURL)
 	if err != nil {
 		logger.Bg().Fatal("failed to create product client", zap.Error(err))
 	}
 
-	ic, err := inventory.NewClientWithResponses(clientHost)
+	ic, err := inventory.NewClientWithResponses(inventoryURL)
 	if err != nil {
 		logger.Bg().Fatal("failed to create inventory client", zap.Error(err))
 	}
