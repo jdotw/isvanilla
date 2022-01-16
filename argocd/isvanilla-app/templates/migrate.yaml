@@ -45,3 +45,10 @@ spec:
               mountPath: "/config/config.yaml"
               subPath: "config.yaml"
               readOnly: true
+      volumes:
+        - name: migration-config
+          configMap:
+            name: sql-migration
+            items:
+            - key: "config.yaml"
+              path: "config.yaml"
