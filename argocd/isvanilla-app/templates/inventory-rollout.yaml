@@ -25,6 +25,8 @@ spec:
           envFrom:
             - secretRef: 
                 name: rds
+          env:
+            {{ toYaml .Values.env | nindent 12 }}
           # env:
           #   - name: POSTGRES_DSN
           #     valueFrom:
