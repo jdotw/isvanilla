@@ -1,36 +1,28 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { RDSStack } from "../lib/rds-stack";
-import { EKSStack } from "../lib/eks-stack";
-import { VPCStack } from "../lib/vpc-stack";
-import { DNSStack } from "../lib/dns-stack";
-import { SecretsStack } from "../lib/secrets-stack";
-import { OpenSearchStack } from "../lib/opensearch-stack";
+import { Config } from "../lib/config";
+import { JK8SAwsCdk } from "@jdotw/jk8s-aws-cdk";
 
-const name = "isvanilla";
+const dev: Config = {
+  fqdn: "api.dev.syrupstock.com",
+};
 
-const app = new cdk.App();
+const prod: Config = {
+  fqdn: "api.syrupstock.com",
+};
 
-const vpc = new VPCStack(app, "VPCStack", {});
-
-const secrets = new SecretsStack(app, "SecretsStack", {});
-
-const dns = new DNSStack(app, "DNSStack", {
-  name,
+const app = new cdk.App({
+  context: {
+    dev,
+    prod,
+  },
 });
 
-const rds = new RDSStack(app, "RDSStack", {
-  vpc,
-});
+const configName = app.node.tryGetContext("config") || "prod";
+const config = app.node.tryGetContext(configName) as Config;
 
-const opensearch = new OpenSearchStack(app, "OpenSearchStack", { vpc });
-
-const cluster = new EKSStack(app, "EKSStack", {
-  name,
-  vpc,
-  rds,
-  dns,
-  opensearch,
+const jk8s = new JK8SAwsCdk(app, "Vanilla", {
+  name: "isvanilla",
+  fqdn: config.fqdn,
 });
