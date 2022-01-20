@@ -2,6 +2,7 @@ apiVersion: postgresql.sql.crossplane.io/v1alpha1
 kind: Database
 metadata:
   name: isvanilla
+  namespace: crossplane-system
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
