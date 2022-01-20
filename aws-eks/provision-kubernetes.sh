@@ -1,23 +1,45 @@
 #!/bin/sh
 
-CLUSTER_NAME=$(aws cloudformation describe-stacks --stack-name EKSStack --query "Stacks[0].Outputs[?OutputKey=='ClusterName'].OutputValue" --output text)
-ARGOCD_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='ArgoCDSecretsPolicyARN'].OutputValue" --output text)
-TELEMETRY_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='TelemetrySecretsPolicyARN'].OutputValue" --output text)
-APP_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='AppSecretsPolicyARN'].OutputValue" --output text)
-DNS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name DNSStack --query "Stacks[0].Outputs[?OutputKey=='ClusterDNSPolicyARN'].OutputValue" --output text)
+export AWS_PROFILE=isvanilla
+
+CLUSTER_NAME=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='ClusterName'].OutputValue" --output text)
+echo "CLUSTER_NAME: $CLUSTER_NAME"
+
+ARGOCD_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='ArgoCDSecretsPolicyARN'].OutputValue" --output text)
+echo "ARGOCD_SECRETS_ROLE_ARN: $ARGOCD_SECRETS_ROLE_ARN"
+
+TELEMETRY_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='TelemetrySecretsPolicyARN'].OutputValue" --output text)
+echo "TELEMETRY_SECRETS_ROLE_ARN: $TELEMETRY_SECRETS_ROLE_ARN"
+JAEGER_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='JaegerSecretsPolicyARN'].OutputValue" --output text)
+echo "JAEGER_SECRETS_ROLE_ARN: $JAEGER_SECRETS_ROLE_ARN"
+APP_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='AppSecretsPolicyARN'].OutputValue" --output text)
+echo "APP_SECRETS_ROLE_ARN: $APP_SECRETS_ROLE_ARN"
+DNS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='ClusterDNSPolicyARN'].OutputValue" --output text)
+echo "DNS_ROLE_ARN: $DNS_ROLE_ARN"
+
 USER_ARN=$(aws iam get-user --query 'User.Arn' --output text)
+echo "USER_ARN: $USER_ARN"
 
-FQDN=$(aws cloudformation describe-stacks --stack-name DNSStack --query "Stacks[0].Outputs[?OutputKey=='FQDN'].OutputValue" --output text)
-ZONE_ID=$(aws cloudformation describe-stacks --stack-name DNSStack --query "Stacks[0].Outputs[?OutputKey=='ZoneID'].OutputValue" --output text)
+FQDN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='FQDN'].OutputValue" --output text)
+echo "FQDN: $FQDN"
+ZONE_ID=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='ZoneID'].OutputValue" --output text)
+echo "ZONE_ID: $ZONE_ID"
 
-ES_DOMAIN=$(aws cloudformation describe-stacks --stack-name OpenSearchStack --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomain'].OutputValue" --output text)
+ES_DOMAIN=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomain'].OutputValue" --output text)
+echo "ES_DOMAIN: $ES_DOMAIN"
+ES_SECRET=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='MasterUserSecretName'].OutputValue" --output text | sed 's/.*:secret:\([^:]*\):.*/\1/' | sed 's/-[^-]*$//')
+echo "ES_SECRET: $ES_SECRET"
 
-ES_SECRET=$(aws cloudformation describe-stacks --stack-name OpenSearchStack --query "Stacks[0].Outputs[?OutputKey=='MasterUserSecretName'].OutputValue" --output text | sed 's/.*:secret:\([^:]*\):.*/\1/' | sed 's/-[^-]*$//')
-RDS_SECRET=$(aws cloudformation describe-stacks --stack-name RDSStack --query "Stacks[0].Outputs[?OutputKey=='SecretName'].OutputValue" --output text)
+RDS_SECRET=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='RDSSecretName'].OutputValue" --output text)
+echo "RDS_SECRET: $RDS_SECRET"
 
-RDS_HOST=$(aws cloudformation describe-stacks --stack-name RDSStack --query "Stacks[0].Outputs[?OutputKey=='Host'].OutputValue" --output text)
+RDS_HOST=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?OutputKey=='RDSHost'].OutputValue" --output text)
+echo "RDS_HOST: $RDS_HOST"
 
-KUBECTL_CONFIG=$(aws cloudformation describe-stacks --stack-name EKSStack --query "Stacks[0].Outputs[?starts_with(OutputKey, '${CLUSTER_NAME}ClusterConfigCommand')].OutputValue" --output text)
+CLUSTER_STACK_NAME=$(aws cloudformation describe-stacks --stack-name Vanilla --query "Stacks[0].Outputs[?starts_with(OutputKey, 'ClusterStackName')].OutputValue" --output text)
+echo "CLUSTER_STACK_NAME: ${CLUSTER_STACK_NAME}"
+KUBECTL_CONFIG=$(AWS_PROFILE=isvanilla aws cloudformation describe-stacks --stack-name ${CLUSTER_STACK_NAME} --query "Stacks[0].Outputs[?starts_with(OutputKey, 'ClusterConfigCommand')].OutputValue" --output text)
+echo "KUBECTL_CONFIG: ${KUBECTL_CONFIG}"
 /bin/sh -c "${KUBECTL_CONFIG}"
 
 EKSCTL_VERSION=$(eksctl version)
@@ -26,19 +48,6 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
-echo "CLUSTER_NAME: $CLUSTER_NAME"
-echo "ARGOCD SECRETS: $ARGOCD_SECRETS_ROLE_ARN"
-echo "TELEMETRY SECRETS: $TELEMETRY_SECRETS_ROLE_ARN"
-echo "APP SECRETS: $APP_SECRETS_ROLE_ARN"
-echo "DNS: $DNS_ROLE_ARN"
-echo "USER: $USER_ARN"
-echo "FQDN: $FQDN"
-echo "ZONE_ID: $ZONE_ID"
-echo "ES_DOMAIN: $ES_DOMAIN"
-echo "ES_SECRET: $ES_SECRET"
-echo "RDS_SECRET: $RDS_SECRET"
-echo "RDS_HOST: $RDS_HOST"
-
 # Create Namespaces
 
 kubectl apply -f manifests/jk8s-namespace.yaml
@@ -46,6 +55,7 @@ kubectl apply -f manifests/external-dns-namespace.yaml
 kubectl apply -f manifests/external-secrets-namespace.yaml
 kubectl apply -f manifests/cert-manager-namespace.yaml
 kubectl apply -f manifests/app-namespace.yaml
+kubectl apply -f manifests/jaeger-namespace.yaml
 
 # Grant AWS User master access to cluster
 
@@ -62,6 +72,7 @@ eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --attach-policy-arn=$DNS_ROLE_ARN \
   --override-existing-serviceaccounts \
   --approve
+
 eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --name=cert-manager \
   --namespace=cert-manager \
@@ -74,7 +85,7 @@ eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
 #       A separate role is created for each namespace
 #       This provides granular control over what secrets can be accessed
 
-# jk8s external secrets
+# argocd external secrets
 eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --name=external-secrets \
   --namespace=jk8s \
@@ -82,11 +93,11 @@ eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --override-existing-serviceaccounts \
   --approve
 
-# telemetry external secrets
+# jaeger external secrets
 eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --name=external-secrets \
-  --namespace=telemetry \
-  --attach-policy-arn=$TELEMETRY_SECRETS_ROLE_ARN \
+  --namespace=jaeger \
+  --attach-policy-arn=$JAEGER_SECRETS_ROLE_ARN \
   --override-existing-serviceaccounts \
   --approve
 

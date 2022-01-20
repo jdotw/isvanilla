@@ -1,4 +1,4 @@
-jk8s:
+bootstrap:
   dns:
     fqdn: ${FQDN}
     externalDNS:
@@ -27,7 +27,7 @@ jk8s:
       aws:
         secretsManager:
           argocdServiceAccountName: external-secrets
-          telemetryServiceAccountName: external-secrets
+          jaegerServiceAccountName: external-secrets
           appServiceAccountName: external-secrets
   telemetry:
     jaeger:
