@@ -4,6 +4,8 @@ metadata:
   name: scrape-deployment
   labels:
     app: scrape
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   selector:
     matchLabels:
