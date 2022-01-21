@@ -7,3 +7,13 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   forProvider: {}
+---
+apiVersion: postgresql.sql.crossplane.io/v1alpha1
+kind: Extension
+metadata:
+  name: isvanilla-uuid-extension
+spec:
+  forProvider:
+    extension: uuid-ossp
+    databaseRef:
+      name: isvanilla
