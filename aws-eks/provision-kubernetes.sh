@@ -56,6 +56,7 @@ kubectl apply -f manifests/external-secrets-namespace.yaml
 kubectl apply -f manifests/cert-manager-namespace.yaml
 kubectl apply -f manifests/app-namespace.yaml
 kubectl apply -f manifests/jaeger-namespace.yaml
+kubectl apply -f manifests/crossplane-system-namespace.yaml
 
 # Grant AWS User master access to cluster
 
@@ -112,7 +113,7 @@ eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
 # crossplane external secrets
 eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --name=external-secrets \
-  --namespace=crossplane \
+  --namespace=crossplane-system \
   --attach-policy-arn=$CROSSPLANE_SECRETS_ROLE_ARN \
   --override-existing-serviceaccounts \
   --approve
