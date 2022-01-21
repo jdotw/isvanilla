@@ -27,8 +27,10 @@ echo "FQDN: $FQDN"
 ZONE_ID=$(aws cloudformation describe-stacks --stack-name DNSStack --query "Stacks[0].Outputs[?OutputKey=='ZoneID'].OutputValue" --output text)
 echo "ZONE_ID: $ZONE_ID"
 
-ES_DOMAIN=$(aws cloudformation describe-stacks --stack-name OpenSearchStack --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomain'].OutputValue" --output text)
-echo "ES_DOMAIN: $ES_DOMAIN"
+ES_DOMAIN_NAME=$(aws cloudformation describe-stacks --stack-name OpenSearchStack --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomainName'].OutputValue" --output text)
+echo "ES_DOMAIN_NAME: $ES_DOMAIN_NAME"
+ES_DOMAIN_ENDPOINT=$(aws cloudformation describe-stacks --stack-name OpenSearchStack --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomainEndpoint'].OutputValue" --output text)
+echo "ES_DOMAIN_ENDPOINT: $ES_DOMAIN_ENDPOINT"
 ES_SECRET=$(aws cloudformation describe-stacks --stack-name OpenSearchStack --query "Stacks[0].Outputs[?OutputKey=='MasterUserSecretName'].OutputValue" --output text | sed 's/.*:secret:\([^:]*\):.*/\1/' | sed 's/-[^-]*$//')
 echo "ES_SECRET: $ES_SECRET"
 
@@ -38,7 +40,7 @@ echo "RDS_SECRET: $RDS_SECRET"
 RDS_HOST=$(aws cloudformation describe-stacks --stack-name RDSStack --query "Stacks[0].Outputs[?OutputKey=='RDSHost'].OutputValue" --output text)
 echo "RDS_HOST: $RDS_HOST"
 
-KUBECTL_CONFIG=$(AWS_PROFILE=isvanilla aws cloudformation describe-stacks --stack-name EKSStack --query "Stacks[0].Outputs[?starts_with(OutputKey, 'ClusterConfigCommand')].OutputValue" --output text)
+KUBECTL_CONFIG=$(aws cloudformation describe-stacks --stack-name EKSStack --query "Stacks[0].Outputs[?starts_with(OutputKey, 'ClusterConfigCommand')].OutputValue" --output text)
 echo "KUBECTL_CONFIG: ${KUBECTL_CONFIG}"
 /bin/sh -c "${KUBECTL_CONFIG}"
 
@@ -47,6 +49,25 @@ if [[ $? != 0 ]]; then
   echo "ERROR: eksctl not installed"
   exit 1
 fi
+
+# Create OpenSearch Master User 
+# This is to work around https://github.com/aws/aws-cdk/issues/18375
+
+ES_MASTER_SECRET_ARN=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'DomainMasterUser')].ARN" --output text)
+echo "ES_MASTER_SECRET_ARN: ${ES_MASTER_SECRET_ARN}"
+ES_MASTER_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${ES_MASTER_SECRET_ARN} | jq --raw-output '.SecretString' | jq -r .username)
+echo "ES_MASTER_USERNAME: ${ES_MASTER_USERNAME}"
+ES_MASTER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ES_MASTER_SECRET_ARN} | jq --raw-output '.SecretString' | jq -r .password)
+if [[ -z $ES_MASTER_PASSWORD ]]; then
+  echo "ES Master password was not found"
+  exit 1
+fi
+echo "ES_MASTER_PASSWORD: ${ES_MASTER_PASSWORD}"
+
+ES_MASTER_USER_RESULT=$(aws opensearch update-domain-config --domain-name ${ES_DOMAIN_NAME} --advanced-security-options "{ \"MasterUserOptions\": { \"MasterUserName\": \"${ES_MASTER_USERNAME}\", \"MasterUserPassword\": \"${ES_MASTER_PASSWORD}\" } }")
+echo "ES_MASTER_USER_RESULT: ${ES_MASTER_USER_RESULT}"
+
+exit 0
 
 # Create Namespaces
 
@@ -125,7 +146,7 @@ helm repo update
 # Install jk8s bootstrap Helm Chart
 FQDN=$FQDN \
   ZONE_ID=$ZONE_ID \
-  ES_DOMAIN=$ES_DOMAIN \
+  ES_DOMAIN_ENDPOINT=$ES_DOMAIN_ENDPOINT \
   ES_SECRET=$ES_SECRET \
   RDS_SECRET=$RDS_SECRET \
   RDS_HOST=$RDS_HOST \
@@ -134,7 +155,7 @@ FQDN=$FQDN \
 # It always fails the first time so... run it agsin 
 FQDN=$FQDN \
   ZONE_ID=$ZONE_ID \
-  ES_DOMAIN=$ES_DOMAIN \
+  ES_DOMAIN_ENDPOINT=$ES_DOMAIN_ENDPOINT \
   ES_SECRET=$ES_SECRET \
   RDS_SECRET=$RDS_SECRET \
   RDS_HOST=$RDS_HOST \
