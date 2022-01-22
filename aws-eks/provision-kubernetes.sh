@@ -67,8 +67,6 @@ echo "ES_MASTER_PASSWORD: ${ES_MASTER_PASSWORD}"
 ES_MASTER_USER_RESULT=$(aws opensearch update-domain-config --domain-name ${ES_DOMAIN_NAME} --advanced-security-options "{ \"MasterUserOptions\": { \"MasterUserName\": \"${ES_MASTER_USERNAME}\", \"MasterUserPassword\": \"${ES_MASTER_PASSWORD}\" } }")
 echo "ES_MASTER_USER_RESULT: ${ES_MASTER_USER_RESULT}"
 
-exit 0
-
 # Create Namespaces
 
 kubectl apply -f manifests/jk8s-namespace.yaml

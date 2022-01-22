@@ -35,7 +35,7 @@ platform:
       storage:
         es:
           enabled: true
-          url: https://${ES_DOMAIN}
+          url: https://${ES_DOMAIN_ENDPOINT}
           credentialsSecretName: ${ES_SECRET}
         inMemory:
           enabled: false
