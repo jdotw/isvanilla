@@ -27,7 +27,7 @@ platform:
       aws:
         secretsManager:
           argocdServiceAccountName: external-secrets
-          jaegerServiceAccountName: external-secrets
+          telemetryServiceAccountName: external-secrets
           appServiceAccountName: external-secrets
           crossplaneServiceAccountName: external-secrets
   telemetry:

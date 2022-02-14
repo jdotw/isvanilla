@@ -10,8 +10,6 @@ echo "ARGOCD_SECRETS_ROLE_ARN: $ARGOCD_SECRETS_ROLE_ARN"
 
 TELEMETRY_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='TelemetrySecretsPolicyARN'].OutputValue" --output text)
 echo "TELEMETRY_SECRETS_ROLE_ARN: $TELEMETRY_SECRETS_ROLE_ARN"
-JAEGER_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='JaegerSecretsPolicyARN'].OutputValue" --output text)
-echo "JAEGER_SECRETS_ROLE_ARN: $JAEGER_SECRETS_ROLE_ARN"
 APP_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='AppSecretsPolicyARN'].OutputValue" --output text)
 echo "APP_SECRETS_ROLE_ARN: $APP_SECRETS_ROLE_ARN"
 CROSSPLANE_SECRETS_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name SecretsStack --query "Stacks[0].Outputs[?OutputKey=='CrossplaneSecretsPolicyARN'].OutputValue" --output text)
@@ -50,23 +48,6 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
-# Create OpenSearch Master User 
-# This is to work around https://github.com/aws/aws-cdk/issues/18375
-
-ES_MASTER_SECRET_ARN=$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'DomainMasterUser')].ARN" --output text)
-echo "ES_MASTER_SECRET_ARN: ${ES_MASTER_SECRET_ARN}"
-ES_MASTER_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${ES_MASTER_SECRET_ARN} | jq --raw-output '.SecretString' | jq -r .username)
-echo "ES_MASTER_USERNAME: ${ES_MASTER_USERNAME}"
-ES_MASTER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ES_MASTER_SECRET_ARN} | jq --raw-output '.SecretString' | jq -r .password)
-if [[ -z $ES_MASTER_PASSWORD ]]; then
-  echo "ES Master password was not found"
-  exit 1
-fi
-echo "ES_MASTER_PASSWORD: ${ES_MASTER_PASSWORD}"
-
-ES_MASTER_USER_RESULT=$(aws opensearch update-domain-config --domain-name ${ES_DOMAIN_NAME} --advanced-security-options "{ \"MasterUserOptions\": { \"MasterUserName\": \"${ES_MASTER_USERNAME}\", \"MasterUserPassword\": \"${ES_MASTER_PASSWORD}\" } }")
-echo "ES_MASTER_USER_RESULT: ${ES_MASTER_USER_RESULT}"
-
 # Create Namespaces
 
 kubectl apply -f manifests/jk8s-namespace.yaml
@@ -74,7 +55,7 @@ kubectl apply -f manifests/external-dns-namespace.yaml
 kubectl apply -f manifests/external-secrets-namespace.yaml
 kubectl apply -f manifests/cert-manager-namespace.yaml
 kubectl apply -f manifests/app-namespace.yaml
-kubectl apply -f manifests/jaeger-namespace.yaml
+kubectl apply -f manifests/telemetry-namespace.yaml
 kubectl apply -f manifests/crossplane-system-namespace.yaml
 
 # Grant AWS User master access to cluster
@@ -113,11 +94,11 @@ eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --override-existing-serviceaccounts \
   --approve
 
-# jaeger external secrets
+# telemetry external secrets
 eksctl create iamserviceaccount --cluster=$CLUSTER_NAME \
   --name=external-secrets \
-  --namespace=jaeger \
-  --attach-policy-arn=$JAEGER_SECRETS_ROLE_ARN \
+  --namespace=telemetry \
+  --attach-policy-arn=$TELEMETRY_SECRETS_ROLE_ARN \
   --override-existing-serviceaccounts \
   --approve
 

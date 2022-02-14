@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: jaeger
+  name: telemetry
   labels:
-    app.kubernetes.io/instance: master-app
+    app.kubernetes.io/instance: platform
     istio-injection: disabled

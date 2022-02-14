@@ -20,12 +20,16 @@ echo $ELB_NAMES | jq --args -c '.[]' - | while read i; do
   aws elb delete-load-balancer --load-balancer-name $NAME
 done
 
-IAM_POLICY_ARNS=$(aws iam list-policies --scope Local --query "Policies[].Arn")
-echo $IAM_POLICY_ARNS | jq --args -c '.[]' - | while read i; do
-  ARN=$(echo $i | sed s/\"//g)
-  echo "Deleting IAM Policy $ARN" 
-  aws iam delete-policy --policy-arn $ARN
-done
+# Commented out: If you delete the IAM Policies here then you must also
+#                destroy and re-create SecretsStack and DNSStack. The
+#                former will then require re-delegation to new NS records
+#
+# IAM_POLICY_ARNS=$(aws iam list-policies --scope Local --query "Policies[].Arn")
+# echo $IAM_POLICY_ARNS | jq --args -c '.[]' - | while read i; do
+#   ARN=$(echo $i | sed s/\"//g)
+#   echo "Deleting IAM Policy $ARN" 
+#   aws iam delete-policy --policy-arn $ARN
+# done
 
 ES_DOMAIN_NAMES=$(aws opensearch list-domain-names --query "DomainNames[].DomainName")
 echo $ES_DOMAIN_NAMES | jq --args -c '.[]' - | while read i; do
@@ -34,8 +38,5 @@ echo $ES_DOMAIN_NAMES | jq --args -c '.[]' - | while read i; do
   aws opensearch delete-domain --domain-name $NAME > /dev/null
 done
 
-
-exit 0
-
-cdk destroy EKSStack --force 
+cdk destroy EKSStack SecretsStack --force 
 
