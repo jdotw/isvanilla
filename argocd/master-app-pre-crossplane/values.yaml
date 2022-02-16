@@ -1,0 +1,33 @@
+inventory:
+  app:
+    name: "inventory"
+    extraEnv:
+      - name: AUTH0_DOMAIN
+        value: "isvanilla.au.auth0.com"
+    image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/inventory:a2cb04c63e87c7f1095a4407af6327fe0027e204
+  virtualService:
+    hosts:
+      - api.syrupstock.com
+      - inventory
+  db:
+    name: postgres
+    migrations:
+      image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/migrate:latest
+      repoURL: https://github.com/jdotw/isvanilla.git
+      path: backend/db/migrations
+scrape:
+  app:
+    name: "scrape"
+    extraEnv:
+      - name: AUTH0_DOMAIN
+        value: "isvanilla.au.auth0.com"
+      - name: INVENTORY_URL
+        value: "http://api.syrupstock.com"
+      - name: LOOP
+        value: "1"
+      - name: LOOP_DELAY
+        value: 15m
+    image: 132602212048.dkr.ecr.ap-southeast-2.amazonaws.com/scrape:ffa6526181c25cca1df6cd8d385d92b06ba46d58
+    replicas: 1
+argocd:
+  namespace: ""

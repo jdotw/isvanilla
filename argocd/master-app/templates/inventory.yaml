@@ -1,25 +1,7 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: jk8s.io/v1beta1
+kind: XCanaryDeployment
 metadata:
   name: inventory
-  namespace: "{{ .Values.argocd.namespace }}"
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
 spec:
-  project: default
-  source:
-    repoURL: https://jdotw.github.io/jk8s
-    chart: canary-rollout
-    targetRevision: "1.0.17"
-    helm:
-      releaseName: inventory
-      values: |
-        {{ toYaml .Values.inventory | nindent 8 }}
-  destination:
-    namespace: app
-    server: https://kubernetes.default.svc
-  syncPolicy:
-    automated:
-      prune: true
+  parameters:
+    {{ toYaml .Values.inventory | nindent 4 }}
